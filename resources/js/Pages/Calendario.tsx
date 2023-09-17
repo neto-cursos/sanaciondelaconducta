@@ -12,11 +12,14 @@ import "react-datepicker/dist/react-datepicker.css";
 
 interface Props{
   sesions:Array<JSON>;
+  horarios:Array<JSON>;
 }
 
-export default function Calendario({sesions}:Props) {
+export default function Calendario({sesions,horarios}:Props) {
 console.log("sesiones")
 console.log(sesions)
+console.log("horarios")
+console.log(horarios)
 
 
   /*interface TimezoneConfig {
@@ -111,6 +114,8 @@ console.log(sesions)
     },
   ],
 });
+
+//convertir sesions y horarios a los siguientes json
 
 //el mes en los objetos del json de eventos va de 1 (enero) a 12 (diciembre)
 let jsondeeventos = [ {

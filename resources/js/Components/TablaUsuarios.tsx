@@ -17,6 +17,7 @@ export default function TablaUsuarios({datos,onClickItem}:Props){
     <tr>
       <th>CI</th>
       <th>Nombre</th>
+      <th>Apellidos</th>
       <th>Correo</th>
       <th>Canal de Comunicación</th>
       <th>Fecha de nacimiento</th>
@@ -32,6 +33,7 @@ export default function TablaUsuarios({datos,onClickItem}:Props){
              <tr  key={item.id}>
       <td>{item.ci}</td>
       <td>{item.name}</td>
+      <td>{item.apellidos}</td>
       <td>{item.email}</td>
       <td>{item.canal_comunicacion}</td>
       <td>{item.fecha_nacimiento}</td>

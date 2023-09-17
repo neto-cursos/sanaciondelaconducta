@@ -18,6 +18,7 @@ interface Props{
 interface User{
   id: string
   name: string
+  apellidos: string
   email: string
   canal_comunicacion: string
   fecha_nacimiento: Date
@@ -36,6 +37,7 @@ export default function ListaUsuarios({users}:Props){
   const route = useRoute();
   const [switchVisibility, setSwitchVisibility] = useState(true);
   const nameInput= useRef(null)
+  const apellidosInput= useRef(null)
   const emailInput= useRef(null)
   const canal_comunicacionInput= useRef(null)
   const fecha_nacimientoInput= useRef(null)
@@ -50,6 +52,7 @@ export default function ListaUsuarios({users}:Props){
   const{data,setData,put,processing,reset,errors} = useForm({
     id:'',
     name:'',
+    apellidos:'',
     email:'',
     canal_comunicacion: '',
     fecha_nacimiento: '',
@@ -68,6 +71,7 @@ export default function ListaUsuarios({users}:Props){
     setData({
       id:user.id,
       name:user.name,
+      apellidos:user.apellidos,
       email:user.email,
       canal_comunicacion:user.canal_comunicacion,
       fecha_nacimiento:user.fecha_nacimiento,
@@ -136,6 +140,24 @@ export default function ListaUsuarios({users}:Props){
                   <InputError className="mt-2" message={errors.name} />
                 </div>
                 <br />
+
+                <div className="mt-4"> 
+                <InputLabel htmlFor="apellidos">Apellidos</InputLabel>
+                  <TextInput
+                    id="apellidos"
+                    name="apellidos"
+                    ref={apellidosInput}
+                    className="mt-1 block w-full isFocused "
+                    value={data.apellidos}
+                  onChange={e => setData('apellidos', e.target.value)}
+                    required
+                    
+                    placeholder="apellidos"
+                  />
+                  <InputError className="mt-2" message={errors.apellidos} />
+                </div>
+                <br />
+
                 <div className="mt-4">
                     <InputLabel htmlFor="email">Correo</InputLabel>
                     <TextInput

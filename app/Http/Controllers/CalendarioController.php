@@ -12,27 +12,22 @@ class CalendarioController extends Controller
 {
   public function index()
   {
-    Log::info('IDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD: ');
-    Log::info(Auth::id());
-
-    //recuperar sesiones del usuario y mandarlas con el rener
+    //recuperar sesiones del psicologo
     $sesions = DB::table('sesions')
       ->leftJoin('pacientes', 'sesions.paciente_id', '=', 'pacientes.user_id')
       ->leftJoin('users', 'pacientes.user_id', '=', 'users.id')
+      ->where('sesions.psicologo_id', Auth::id())
       ->get();
-    //$users = User::all()->except(Auth::id());
-    return Inertia::render('Calendario', [
-      //'users' => $users,
-      'sesions' => $sesions,
-    ]);
-    //  Log::info('LOG EXAMPLE');
-  }
 
-  //guardo como plantilla pero no pertenece a este controlador
-  /*public function update(Request $request, $id)
-  {
-    $user = User::find($id);
-    $user->fill($request->input())->saveOrFail();
-    return redirect('calendario');
-  }*/
+    //recuperar disponibilidad de horarios del psicologo
+    $horarios = DB::table('horarios')
+      ->where('psicologo_id', Auth::id())
+      ->where('isDisponible', 1)
+      ->get();
+
+    return Inertia::render('Calendario', [
+      'sesions' => $sesions,
+      'horarios' => $horarios,
+    ]);
+  }
 }
