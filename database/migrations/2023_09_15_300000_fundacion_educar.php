@@ -14,6 +14,7 @@ return new class extends Migration {
       /*El método de confirmación de cuenta se guarda en base de datos para que el sistema
         sepa cómo debe notificar a un usuario (puede tener 4 valores que son 
         sms, whatsapp, telegram, correo)*/
+      $table->string('apellidos')->after('name');
       $table->string('canal_comunicacion');
       $table->smallInteger('contador_bloqueos')->nullable();
       $table->boolean('bloqueo_permanente')->nullable();

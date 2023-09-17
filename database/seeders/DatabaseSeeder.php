@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
 
     $user = new User();
     $user->name = 'administrador';
+    $user->apellidos = 'apellido';
     $user->email = 'administrador@gmail.com';
     $user->password = bcrypt('administrador');
     $user->email_verified_at = now();
@@ -48,6 +49,7 @@ class DatabaseSeeder extends Seeder
 
     $user = new User();
     $user->name = 'psicologo';
+    $user->apellidos = 'apellido';
     $user->email = 'psicologo@gmail.com';
     $user->password = bcrypt('psicologo');
     $user->email_verified_at = now();
@@ -68,6 +70,7 @@ class DatabaseSeeder extends Seeder
 
     $user = new User();
     $user->name = 'tutor';
+    $user->apellidos = 'apellido';
     $user->email = 'tutor@gmail.com';
     $user->password = bcrypt('tutor');
     $user->email_verified_at = now();
@@ -88,6 +91,7 @@ class DatabaseSeeder extends Seeder
 
     $user = new User();
     $user->name = 'paciente';
+    $user->apellidos = 'apellido';
     $user->email = 'paciente@gmail.com';
     $user->password = bcrypt('paciente');
     $user->email_verified_at = now();
@@ -108,6 +112,7 @@ class DatabaseSeeder extends Seeder
 
     $user = new User();
     $user->name = 'sinrol';
+    $user->apellidos = 'apellido';
     $user->email = 'sinrol@gmail.com';
     $user->password = bcrypt('sinrol');
     $user->email_verified_at = now();

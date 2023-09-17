@@ -10,7 +10,14 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Calendario() {
+interface Props{
+  sesions:Array<JSON>;
+}
+
+export default function Calendario({sesions}:Props) {
+console.log("sesiones")
+console.log(sesions)
+
 
   /*interface TimezoneConfig {
     timezoneName: string;
