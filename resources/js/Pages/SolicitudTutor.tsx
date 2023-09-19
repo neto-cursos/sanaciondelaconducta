@@ -20,6 +20,10 @@ export default function SolicitudTutor({solicitudes}:Props) {
                    <br/>
             <div className={` min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900`}>
               <Titulo>Solicitudes de Tutores</Titulo>
+              {solicitudes.length == 0 ? <Titulo>NO HAY NADA</Titulo> : 
+              
+              <Titulo>HAY {'solicitudes.length'} ELEMENTOS</Titulo>
+              }
               </div>
               <br/>
 
