@@ -19,7 +19,7 @@ class HomeController extends Controller
         return Inertia::render('HomePaciente');
       } else {
         if ($user->hasRole('tutor')) {
-          return Inertia::render('HomeTutor');
+          return redirect('homeTutor');
         } else {
           if ($user->hasRole('administrador')) {
             return Inertia::render('HomeAdministrador');

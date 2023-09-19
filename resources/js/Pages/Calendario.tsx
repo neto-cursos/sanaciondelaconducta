@@ -11,8 +11,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface Props{
-  sesions:Array<JSON>;
-  horarios:Array<JSON>;
+  sesions:Array<any>;
+  horarios:Array<any>;
 }
 
 export default function Calendario({sesions,horarios}:Props) {
@@ -36,7 +36,6 @@ console.log(horarios)
   function formatTime(time:any) {
     const hours = `${time.getHours()}`.padStart(2, '0');
     const minutes = `${time.getMinutes()}`.padStart(2, '0');
-  
     return `${hours}:${minutes}`;
   }
 
@@ -104,21 +103,23 @@ console.log(horarios)
   calendars: [
     {
       id: 'cal1',
-      name: 'Sesión',
+      name: 'sesion',
       backgroundColor: '#f8c2a1',
     },
     {
       id: 'cal2',
-      name: 'Libre',
+      name: 'horario',
       backgroundColor: '#d1bcde',
+    },
+    {
+      id: 'cal3',
+      name: 'sesion',
+      backgroundColor: '#19757c',
     },
   ],
 });
 
-//convertir sesions y horarios a los siguientes json
-
-//el mes en los objetos del json de eventos va de 1 (enero) a 12 (diciembre)
-let jsondeeventos = [ {
+/*let jsondeeventos = [ {
   id: 'event1',
   calendarId: 'cal1',
   title: 'Weekly Meeting',
@@ -134,9 +135,53 @@ let jsondeeventos = [ {
   end: '2023-09-07T13:00:00',
   isVisible: true,
 },
-]
+]*/
 
-calendar.createEvents(jsondeeventos);
+//el mes en los objetos del json de eventos va de 1 (enero) a 12 (diciembre)
+let auxEventos = []
+let auxFecha = new Date()
+console.log(auxFecha)
+for(let i = 0; i < sesions.length; i++) {
+  //color distinto para el dia actual
+  let auxInicio = new Date(sesions[i].fecha_hora_inicio)
+
+  if(auxInicio.getDate() == auxFecha.getDate() &&
+  auxInicio.getMonth() == auxFecha.getMonth() &&
+  auxInicio.getFullYear() == auxFecha.getFullYear()){
+
+    auxEventos.push({
+      title: sesions[i].name+" "+sesions[i].apellidos,
+      start: new Date(sesions[i].fecha_hora_inicio),
+      end: new Date(sesions[i].fecha_hora_fin),
+      calendarId: 'cal3',
+    })
+
+  }else{
+
+    auxEventos.push({
+      title: sesions[i].name+" "+sesions[i].apellidos,
+      start: new Date(sesions[i].fecha_hora_inicio),
+      end: new Date(sesions[i].fecha_hora_fin),
+      calendarId: 'cal1',
+    })
+  }
+
+}
+
+for(let i = 0; i < horarios.length; i++) {
+
+
+
+    auxEventos.push({
+      title: "libre",
+      start: new Date(horarios[i].fecha_hora_inicio),
+      end: new Date(horarios[i].fecha_hora_fin),
+      calendarId: 'cal2',
+    })
+
+  }
+
+calendar.createEvents(auxEventos);
 
 const previousWeek = () => {
   calendar.prev()
@@ -200,7 +245,7 @@ const changeDate = (date: Date) => {
               </div>
               <br/>
 
-              <div id="calendar" className="w-[800px] h-[800px] bg-customMoradoClaro">
+              <div id="calendar" className="w-[1000px] h-[800px] bg-customMoradoClaro">
                 <div className='collapse'>calendar.render()</div>
               </div>
             <div>Copyright (c) 2021 NHN Corp.</div>

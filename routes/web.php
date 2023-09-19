@@ -42,11 +42,11 @@ Route::middleware([
   });
 
   Route::group(['middleware' => ['role:tutor']], function () {
-    Route::get('/homeTutor', function () {
-      return Inertia::render('HomeTutor');
-    })->name('homeTutor');
+    Route::resource('homeTutor', HomeTutorController::class);
 
     Route::resource('asignarPaciente', AsignarPacienteController::class);
+
+    Route::resource('solicitudTutor', SolicitudTutorController::class);
   });
 
   Route::group(['middleware' => ['role:paciente']], function () {

@@ -36,10 +36,11 @@ export default function AppLayout({
     [route('dashboard'),'Dashboard','dashboard','sinrol'],
     [route('homePaciente'),'Home Paciente','homePaciente','paciente'],
     [route('calendario.index'),'Calendario','calendario.index','psicologo'],
-    [route('homeTutor'),'Home Tutor','homeTutor','tutor'],
+    [route('homeTutor.index'),'Home Tutor','homeTutor.index','tutor'],
     [route('homeAdministrador'),'Home Administrador','homeAdministrador','administrador'],
     [route('usuarios.index'),'Usuarios','usuarios.index','administrador'],
     [route('asignarPaciente.index'),'Asignar paciente','asignarPaciente.index','tutor'],
+    [route('solicitudTutor.index'),'Solicitudes de Tutores','solicitudTutor.index','tutor'],
   ];
 
   let auxUser =JSON.stringify(page.props.auth.user)

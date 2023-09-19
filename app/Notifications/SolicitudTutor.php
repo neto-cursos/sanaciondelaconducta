@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Prueba extends Notification implements ShouldQueue
+class SolicitudTutor extends Notification implements ShouldQueue
 {
   use Queueable;
 
@@ -35,9 +35,12 @@ class Prueba extends Notification implements ShouldQueue
   public function toMail(object $notifiable): MailMessage
   {
     return (new MailMessage())
-      ->line('The introduction to the notification.')
-      ->action('Notification Action', url('/'))
-      ->line('Thank you for using our application!');
+      ->line('Ha recibido una solicitud de un tutor.')
+      ->line(
+        'Para mas información ingrese a la sección "Solicitudes de Tutores" del sistema o directamente a través del siguiente link'
+      )
+      ->action('Ver solicitud', url('/solicitudTutor'))
+      ->line('Gracias por usar nuestro sistema!');
   }
 
   /**
