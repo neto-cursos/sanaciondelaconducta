@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Prueba;
 use App\Models\PacienteTutor;
+use App\Models\SolicitudTutor;
 use Illuminate\Support\Facades\DB;
 
 class SolicitudTutorController extends Controller
@@ -42,19 +43,35 @@ class SolicitudTutorController extends Controller
   {
     Log::info('aceptar solicitud');
     Log::info($id);
-    /*$solicitudTutor = SolicitudTutor::find($id);
+    $solicitudTutor = SolicitudTutor::find($id);
+    Log::info('solicitud tutor');
+    Log::info($solicitudTutor);
     $solicitudTutor->estado = 'terminada';
-    $solicitudTutor->saveOrFail();*/
-    //return redirect('usuarios');
+
+    $obj = new PacienteTutor();
+    $obj->paciente_id = $solicitudTutor->first()->paciente_id;
+    $obj->tutor_id = $solicitudTutor->first()->tutor_solicitante;
+    Log::info('obj');
+    Log::info($obj);
+
+    $solicitudTutor->saveOrFail();
+
+    $obj->save();
+
+    return redirect('solicitudTutor');
   }
 
   public function destroy($id)
   {
     Log::info('rechazar solicitud');
     Log::info($id);
-    /*$solicitudTutor = SolicitudTutor::find($id);
+    $solicitudTutor = SolicitudTutor::find($id);
+    Log::info('solicitud tutor');
+    Log::info($solicitudTutor);
     $solicitudTutor->estado = 'terminada';
-    $solicitudTutor->saveOrFail();*/
-    //return redirect('usuarios');
+
+    $solicitudTutor->saveOrFail();
+
+    return redirect('solicitudTutor');
   }
 }

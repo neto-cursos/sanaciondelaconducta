@@ -118,10 +118,15 @@ export default function SolicitudTutor({solicitudes}:Props) {
                     ))}
                     </tbody>
                 </table>
-                </div>
+
                 <br/>
                 <PrimaryButton className={`table-auto ${switchVisibility ? 'collapse' : 'visible'}`} onClick={()=>cancelar()}>Cancelar</PrimaryButton>
-                <PrimaryButton className={`table-auto ${switchVisibility ? 'collapse' : 'visible'}`} onClick={()=>actualizar()}>Confirmar acción</PrimaryButton>
+                <br/>
+                <PrimaryButton className={`table-auto ${switchVisibility ? 'collapse' : 'visible'}`} onClick={()=>actualizar()}>Confirmar</PrimaryButton>
+
+                </div>
+
+
 
 
         </AppLayout>

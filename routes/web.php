@@ -50,8 +50,6 @@ Route::middleware([
   });
 
   Route::group(['middleware' => ['role:paciente']], function () {
-    Route::get('/homePaciente', function () {
-      return Inertia::render('HomePaciente');
-    })->name('homePaciente');
+    Route::resource('homePaciente', HomePacienteController::class);
   });
 });

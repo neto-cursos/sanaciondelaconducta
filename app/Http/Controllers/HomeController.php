@@ -16,7 +16,7 @@ class HomeController extends Controller
       return redirect('calendario');
     } else {
       if ($user->hasRole('paciente')) {
-        return Inertia::render('HomePaciente');
+        return redirect('homePaciente');
       } else {
         if ($user->hasRole('tutor')) {
           return redirect('homeTutor');
