@@ -39,6 +39,9 @@ class SolicitudTutor extends Model
     'tutor_actual',
     'tutor_solicitante',
     'estado',
+    'ci',
+    'name',
+    'apellidos',
   ];
 
   /*public function tutor()

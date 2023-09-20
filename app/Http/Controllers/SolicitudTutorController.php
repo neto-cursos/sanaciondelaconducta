@@ -15,37 +15,46 @@ class SolicitudTutorController extends Controller
 {
   public function index()
   {
-    //recuperar solicitudes pendientes a este usuario
-    $solicitudes = DB::table('solicitud_tutor as a')
+    $userTutor = Auth::user();
 
-      //->selectRaw('')
-
-      //psicologo solicitante
-      ->leftJoin('tutors as b', 'a.tutor_solicitante', '=', 'b.id')
-      ->leftJoin('users as c', 'b.id', '=', 'c.id')
-      //psicologo receptor
-      ->leftJoin('tutors as d', 'a.tutor_actual', '=', 'd.id')
-      ->leftJoin('users as e', 'd.id', '=', 'e.id')
-      //paciente
-      ->leftJoin('pacientes as f', 'a.paciente_id', '=', 'f.id')
-      ->leftJoin('users as g', 'f.id', '=', 'g.id')
-
-      //->where('sesions.psicologo_id', Auth::id())
+    $tutor = DB::table('users')
+      ->selectRaw('tutors.id')
+      ->leftJoin('tutors', 'tutors.user_id', '=', 'users.id')
+      ->where('users.id', $userTutor->id)
       ->get();
 
-    //$users = User::all()->except(Auth::id());
+    Log::info('id tabla tutors');
+    Log::info($tutor->first()->id);
+
+    //recuperar solicitudes pendientes de este usuario
+    $solicitudes = DB::table('solicitud_tutor')
+      ->where('solicitud_tutor.tutor_actual', $tutor->first()->id)
+      ->where('solicitud_tutor.estado', 'pendiente')
+      //->where('solicitud_tutor.tutor_actual', 233)
+      ->get();
+
     return Inertia::render('SolicitudTutor', [
       'solicitudes' => $solicitudes,
     ]);
-    //  Log::info('LOG EXAMPLE');
   }
 
-  /*public function update(Request $request, $id)
+  public function update(Request $request, $id)
   {
-    $user = User::find($id);
-    $user->contador_bloqueos = 0;
-    $user->bloqueo_permanente = false;
-    $user->fill($request->input())->saveOrFail();
-    return redirect('usuarios');
-  }*/
+    Log::info('aceptar solicitud');
+    Log::info($id);
+    /*$solicitudTutor = SolicitudTutor::find($id);
+    $solicitudTutor->estado = 'terminada';
+    $solicitudTutor->saveOrFail();*/
+    //return redirect('usuarios');
+  }
+
+  public function destroy($id)
+  {
+    Log::info('rechazar solicitud');
+    Log::info($id);
+    /*$solicitudTutor = SolicitudTutor::find($id);
+    $solicitudTutor->estado = 'terminada';
+    $solicitudTutor->saveOrFail();*/
+    //return redirect('usuarios');
+  }
 }
