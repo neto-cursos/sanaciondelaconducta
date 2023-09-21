@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Prueba;
 use App\Models\PacienteTutor;
+use App\Models\Paciente;
 use Illuminate\Support\Facades\DB;
 
 class HomePacienteController extends Controller
@@ -16,37 +17,33 @@ class HomePacienteController extends Controller
   public function index()
   {
     $user = Auth::user();
-    Log::info('usuario');
-    Log::info($user);
+    //Log::info('usuario');
+    //Log::info($user);
 
     $obj = DB::table('pacientes')
       ->where('pacientes.user_id', Auth::id())
       ->get();
 
-    Log::info('obj');
-    Log::info($obj);
+    //Log::info('obj');
+    //Log::info($obj);
 
     $sesiones = DB::table('sesions')
       ->where('sesions.paciente_id', $obj->first()->id)
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
-    Log::info('sesiones');
-    Log::info($sesiones);
+    //Log::info('sesiones');
+    //Log::info($sesiones);
 
     //conectar cv desde tabla archivos
-    if ($obj->first()->psicologo_id != null) {
-      $psicologos = DB::table('users')
-        ->selectRaw(
-          'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto,archivo,tipo_archivo'
-        )
-        ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
-        ->leftjoin('archivos', 'archivos.psicologo_id', '=', 'psicologos.id')
-        ->where('psicologos.estado', 'activo')
-        ->get();
-    } else {
-      $psicologos = [];
-    }
+    $psicologos = DB::table('users')
+      ->selectRaw(
+        'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto,archivo,tipo_archivo'
+      )
+      ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
+      ->leftjoin('archivos', 'archivos.psicologo_id', '=', 'psicologos.id')
+      ->where('psicologos.estado', 'activo')
+      ->get();
 
     //pagos pendientes
     $pagos_pendientes = DB::table('pagos')
@@ -90,5 +87,24 @@ class HomePacienteController extends Controller
     $user->bloqueo_permanente = false;
     $user->fill($request->input())->saveOrFail();
     return redirect('usuarios');*/
+  }
+
+  //asignar psicologo a paciente
+  public function destroy($params)
+  {
+    $arrayAux = explode(',', $params);
+    Log::info('id paciente');
+    Log::info($arrayAux[0]);
+    Log::info('id psicologo');
+    Log::info($arrayAux[1]);
+
+    $pac = Paciente::find($arrayAux[0]);
+    Log::info('paciente antes de editar');
+    Log::info($pac);
+    $pac->psicologo_id = $arrayAux[1];
+    Log::info('paciente luego de editar');
+    Log::info($pac);
+    $pac->saveOrFail();
+    return redirect('homePaciente');
   }
 }

@@ -55,8 +55,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
   const servicioInput= useRef(null)
   const institucionInput= useRef(null)
   const convenioInput= useRef(null)
-  const{data,setData,put,post,processing,reset,errors} = useForm({
-    operacion:"",
+  const{data,setData,put,post,delete:destroy,processing,reset,errors} = useForm({
+    operacion:'',
     estado:'pendiente',
     pago_confirmado:0,
     fecha_hora_inicio:'',
@@ -70,6 +70,22 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     sesion_id:sesiones[0].id
   })
 
+  const asignarPsicologo = (psicologo_id: any) => {
+    setSwitchVisibility("tablaboton")
+    destroy(route('homePaciente.destroy',paciente_id+","+psicologo_id),{
+      onSuccess:()=>{
+        alert("Exito")
+      },
+      onError:()=>{
+        /*if(errors.name){
+          reset('name')
+        }
+        if(errors.email){
+          reset('email')
+        }*/
+      },
+    });
+  };
 
   const programarSesion = () => {
     //check si hay una sesion programada
@@ -78,20 +94,25 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     if(sesiones[0].estado == "programada" && fechaSesion>auxFecha){
       alert("ya tiene una sesion programada")
     }else{
-      console.log("siguiente if")
-      if(){
-
+      
+      if(pagos_pendientes.length!=0){
+        alert("no puede programar la sesión por un pago pendiente. se le notificará cuando se registre su transacción")
       }else{
-
+        
+        //si el usuario no tiene psicologo elegir uno->asignar
+        if(psicologo_id==null){
+          console.log("asignar psicologo")
+          setSwitchVisibility("tablapsicologos");
+        }else{
+          console.log("continuar")
+          //verificar si el usuario debe compensar una sesion y si es true form de pago y mandar solicitud
+        }
       }
     }
-  };
-  //cuando se apreta el boton
-  //si el usuario debe compensar una sesion y tiene una solicitud pendiente mostrar alerta de que espere
-  //si el usuario debe compensar una sesion y no tiene solicitud pendiente mostrar form de pago y mandar solicitud
-  
-  //si el usuario tiene todos los pagos confirmados->
-  //si el usuario no tiene psicologo elegir uno->asignar
+  };  
+
+  //si el usuario tiene todos los pagos confirmados y no debe compensar
+
   //cuando el usuario tiene psicologo puede finalmente agendar sesion mostrando calendario
 
   const mostrarFormSesion = (obj: any) => {
@@ -130,14 +151,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     setSwitchVisibility("");
   };
 
-  const asignarPsicologo = (id: any) => {
-    setData({
-      psicologo_id:id,  
-      operacion:"asignarPsicologo"
-});
 
-setSwitchVisibility("confirmar update");
-  };
 
   const update = (e:any) => {
     e.preventDefault();
@@ -321,7 +335,7 @@ setSwitchVisibility("confirmar update");
               
               <br/>
 
-              <table className="table-auto">
+              <table className={`table-auto ${switchVisibility=="tablapsicologos" ? 'visible' : 'collapse'}`}>
 
                 <thead>
                 <tr>
@@ -336,6 +350,7 @@ setSwitchVisibility("confirmar update");
                 <th>CV</th>
                 <th>Descripción de CV</th>
                 <th>Foto</th>
+                <th>Elegir psicólogo</th>
                 </tr>
                 </thead>
 
