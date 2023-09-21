@@ -17,6 +17,7 @@ interface Props{
     paciente_id:number;
     sesiones:any;
     psicologos:Array<JSON>;
+    pagos_pendientes:Array<JSON>;
 }
 
 /*interface User{
@@ -30,7 +31,7 @@ interface Props{
   ci: string
 }*/
 
-export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psicologos}:Props) {
+export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psicologos,pagos_pendientes}:Props) {
     console.log("user")
     console.log(user)
     console.log("psicologo_id")
@@ -43,6 +44,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     console.log(sesiones[0].id)
     console.log("psicologos")
     console.log(psicologos)
+    console.log("pagos pendientes")
+    console.log(pagos_pendientes)
 
     const route = useRoute();
   const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
@@ -79,7 +82,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
       if(){
 
       }else{
-        
+
       }
     }
   };

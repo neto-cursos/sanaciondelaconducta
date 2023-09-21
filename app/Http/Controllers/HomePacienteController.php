@@ -48,12 +48,21 @@ class HomePacienteController extends Controller
       $psicologos = [];
     }
 
+    //pagos pendientes
+    $pagos_pendientes = DB::table('pagos')
+      ->join('sesions', 'pagos.sesion_id', '=', 'sesions.id')
+      ->join('pacientes', 'sesions.paciente_id', '=', 'pacientes.id')
+      ->join('users', 'pacientes.user_id', '=', 'users.id')
+      ->where('isTerminado', 0)
+      ->get();
+
     return Inertia::render('HomePaciente', [
       'user' => $user,
       'psicologo_id' => $obj->first()->psicologo_id,
       'paciente_id' => $obj->first()->id,
       'sesiones' => $sesiones,
       'psicologos' => $psicologos,
+      'pagos_pendientes' => $pagos_pendientes,
     ]);
     //  Log::info('LOG EXAMPLE');
   }
