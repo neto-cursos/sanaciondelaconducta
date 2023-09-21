@@ -38,9 +38,10 @@ class HomePacienteController extends Controller
     if ($obj->first()->psicologo_id != null) {
       $psicologos = DB::table('users')
         ->selectRaw(
-          'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto'
+          'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto,archivo,tipo_archivo'
         )
         ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
+        ->leftjoin('archivos', 'archivos.psicologo_id', '=', 'psicologos.id')
         ->where('psicologos.estado', 'activo')
         ->get();
     } else {
@@ -60,11 +61,17 @@ class HomePacienteController extends Controller
   //funcion para pago de sesion cancelada
   public function store(Request $request)
   {
+    Log::info('store');
+    Log::info($request);
   }
 
   //programar sesion
   public function update(Request $request, $id)
   {
+    Log::info('update');
+    Log::info($request);
+    Log::info('parametro');
+    Log::info($id);
     //if request psicologo distinto de ""
     //asignarpsicologo
     //programar sesion

@@ -45,7 +45,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     console.log(psicologos)
 
     const route = useRoute();
-  const [switchVisibility, setSwitchVisibility] = useState("");
+  const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
   const fecha_hora_inicioInput= useRef(null)
   const fecha_hora_finInput= useRef(null)
 
@@ -53,6 +53,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
   const institucionInput= useRef(null)
   const convenioInput= useRef(null)
   const{data,setData,put,post,processing,reset,errors} = useForm({
+    operacion:"",
     estado:'pendiente',
     pago_confirmado:0,
     fecha_hora_inicio:'',
@@ -65,10 +66,23 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     convenio:'',
     sesion_id:sesiones[0].id
   })
-  //check si hay una sesion programada
-  //si hay no mostrar nada
-  //si no hay mostrar el boton de programacion
 
+
+  const programarSesion = () => {
+    //check si hay una sesion programada
+   let auxFecha = new Date();
+   let fechaSesion = new Date(sesiones[0].fecha_hora_fin)
+    if(sesiones[0].estado == "programada" && fechaSesion>auxFecha){
+      alert("ya tiene una sesion programada")
+    }else{
+      console.log("siguiente if")
+      if(){
+
+      }else{
+        
+      }
+    }
+  };
   //cuando se apreta el boton
   //si el usuario debe compensar una sesion y tiene una solicitud pendiente mostrar alerta de que espere
   //si el usuario debe compensar una sesion y no tiene solicitud pendiente mostrar form de pago y mandar solicitud
@@ -113,10 +127,19 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     setSwitchVisibility("");
   };
 
+  const asignarPsicologo = (id: any) => {
+    setData({
+      psicologo_id:id,  
+      operacion:"asignarPsicologo"
+});
+
+setSwitchVisibility("confirmar update");
+  };
+
   const update = (e:any) => {
     e.preventDefault();
     setSwitchVisibility("");
-    put(route('homePaciente.update',data.id),{
+    put(route('homePaciente.update',data.paciente_id),{
       onSuccess:()=>{
         alert("Exito")
       },
@@ -158,6 +181,10 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
             <div className={` min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900`}>
               <Titulo>Home Paciente</Titulo>
 
+              <br />
+
+              <PrimaryButton className={`${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`} onClick={()=>programarSesion()}>Programar Sesión</PrimaryButton>
+              
               <br />
              <form className="w-[350px]" onSubmit={save}>
               <div className="mt-4"> 
@@ -320,10 +347,10 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
                 {/*<td>{item.ciudad_residencia}</td>
                 <td>{item.departamento_residencia}</td>
                 <td>{item.pais_residencia}</td>*/}
-                <td>{item.cv}</td>
+                <td>{item.archivo}</td>
                 <td>{item.descripcion_cv}</td>
                 <td>{item.foto}</td>
-                <td><PrimaryButton onClick={()=>onClickItem(item)}>Elegir psicólogo</PrimaryButton></td>
+                <td><PrimaryButton onClick={()=>asignarPsicologo(item.id)}>Elegir psicólogo</PrimaryButton></td>
 
                 </tr>
                     

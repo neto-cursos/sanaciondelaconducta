@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $sesions_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property bool $isTerminado
  *
  * @package App\Models
  */
@@ -27,13 +28,15 @@ class Pago extends Model
 	protected $table = 'pagos';
 
 	protected $casts = [
-		'sesions_id' => 'int'
+		'sesions_id' => 'int',
+		'isTerminado' => 'bool'
 	];
 
 	protected $fillable = [
 		'servicio',
 		'institucion',
 		'convenio',
-		'sesions_id'
+		'sesions_id',
+		'isTerminado'
 	];
 }
