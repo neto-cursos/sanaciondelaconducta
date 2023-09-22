@@ -52,5 +52,6 @@ class Sesion extends Model
     'calificacion',
     'calificacion_descripcion',
     'contador_cancelaciones',
+    'solicitante',
   ];
 }

@@ -107,17 +107,22 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
            sesiones[0].pago_confirmado==false){
             setSwitchVisibility("formpago");
           }else{
-            console.log("agendar sesion")
+            if(sesiones[0].estado == "programada" && fechaSesion>auxFecha){
+              alert("ya tiene una sesion programada")
+            }else{
+              console.log("agendar sesion")
+              setSwitchVisibility("calendario");
+            }
           }
         }
       }
     }
   };  
 
-  const update = (e:any) => {
-    e.preventDefault();
-    setSwitchVisibility("");
-    put(route('homePaciente.update',data.paciente_id),{
+  const update = (/*e:any*/) => {
+    //e.preventDefault();
+    setSwitchVisibility("tablaboton");
+    put(route('homePaciente.update','2023-09-23 10:00:00,2023-09-23 11:00:00'),{
       onSuccess:()=>{
         alert("Exito")
       },
@@ -267,6 +272,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
                 ))}
                 </tbody>
               </table>
+
+              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Calendario</PrimaryButton>
               </div>
         </AppLayout>
         </LogoLayout>

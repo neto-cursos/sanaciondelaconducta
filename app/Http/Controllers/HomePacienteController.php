@@ -11,6 +11,7 @@ use App\Notifications\Prueba;
 use App\Models\PacienteTutor;
 use App\Models\Pago;
 use App\Models\Paciente;
+use App\Models\Sesion;
 use Illuminate\Support\Facades\DB;
 
 class HomePacienteController extends Controller
@@ -94,21 +95,38 @@ class HomePacienteController extends Controller
   }
 
   //programar sesion
-  public function update(Request $request, $id)
+  public function update(Request $request, $params)
   {
     Log::info('update');
+    Log::info('request object');
     Log::info($request);
-    Log::info('parametro');
-    Log::info($id);
-    //if request psicologo distinto de ""
-    //asignarpsicologo
-    //programar sesion
+    $arrayAuxiliar = explode(',', $params);
+    Log::info('fecha hora inicio');
+    Log::info($arrayAuxiliar[0]);
+    Log::info('fecha hora fin');
+    Log::info($arrayAuxiliar[1]);
 
-    /* $user = User::find($id);
-    $user->contador_bloqueos = 0;
-    $user->bloqueo_permanente = false;
-    $user->fill($request->input())->saveOrFail();
-    return redirect('usuarios');*/
+    $sesionesAux = DB::table('sesions')
+    ->where('sesions.paciente_id', $request->paciente_id)
+    ->orderBy('sesions.updated_at', 'desc')
+    ->get();
+
+    //reservar horario y registrar sesion con estado solicitud
+    //agregar campo de solicitante a sesion
+    $sesion = Sesion::find($id);
+
+    $sesion = new Sesion();
+    $sesion->estado = "programada";
+    $sesion->pago_confirmado = false;
+    $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
+    $sesion->fecha_hora_fin = $arrayAuxiliar[1];
+    $sesion->paciente_id = $request->paciente_id;
+    $sesion->psicologo_id = $request->psicologo_id;
+    $sesion->contador_cancelaciones = ;
+    Log::info('objeto lleno');
+    Log::info($sesion);
+    //$user->fill($request->input())->saveOrFail();
+    //return redirect('usuarios');
   }
 
   //asignar psicologo a paciente
