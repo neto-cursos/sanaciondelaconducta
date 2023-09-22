@@ -107,8 +107,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
            sesiones[0].pago_confirmado==false){
             setSwitchVisibility("formpago");
           }else{
-            if(sesiones[0].estado == "programada" && fechaSesion>auxFecha){
-              alert("ya tiene una sesion programada")
+            if(sesiones[0].estado == "solicitada"){
+              alert("tiene una solicitud de sesión pendiente. no puede programar otra sesión")
             }else{
               console.log("agendar sesion")
               setSwitchVisibility("calendario");
@@ -122,7 +122,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
   const update = (/*e:any*/) => {
     //e.preventDefault();
     setSwitchVisibility("tablaboton");
-    put(route('homePaciente.update','2023-09-23 10:00:00,2023-09-23 11:00:00'),{
+    put(route('homePaciente.update','2023-11-04 14:00:00,2023-11-04 15:00:00'),{
       onSuccess:()=>{
         alert("Exito")
       },

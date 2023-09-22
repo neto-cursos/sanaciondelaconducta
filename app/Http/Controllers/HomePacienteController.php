@@ -11,6 +11,7 @@ use App\Notifications\Prueba;
 use App\Models\PacienteTutor;
 use App\Models\Pago;
 use App\Models\Paciente;
+use App\Models\Horario;
 use App\Models\Sesion;
 use Illuminate\Support\Facades\DB;
 
@@ -94,7 +95,7 @@ class HomePacienteController extends Controller
     //Log::info($pago);
   }
 
-  //programar sesion
+  //solicitar sesion
   public function update(Request $request, $params)
   {
     Log::info('update');
@@ -106,27 +107,69 @@ class HomePacienteController extends Controller
     Log::info('fecha hora fin');
     Log::info($arrayAuxiliar[1]);
 
-    $sesionesAux = DB::table('sesions')
-    ->where('sesions.paciente_id', $request->paciente_id)
-    ->orderBy('sesions.updated_at', 'desc')
-    ->get();
-
     //reservar horario y registrar sesion con estado solicitud
-    //agregar campo de solicitante a sesion
-    $sesion = Sesion::find($id);
+    $horarioAux = DB::table('horarios')
+      ->where('psicologo_id', $request->psicologo_id)
+      ->where('fecha_hora_inicio', $arrayAuxiliar[0])
+      ->where('fecha_hora_fin', $arrayAuxiliar[1])
+      ->get();
 
-    $sesion = new Sesion();
-    $sesion->estado = "programada";
-    $sesion->pago_confirmado = false;
-    $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
-    $sesion->fecha_hora_fin = $arrayAuxiliar[1];
-    $sesion->paciente_id = $request->paciente_id;
-    $sesion->psicologo_id = $request->psicologo_id;
-    $sesion->contador_cancelaciones = ;
-    Log::info('objeto lleno');
-    Log::info($sesion);
-    //$user->fill($request->input())->saveOrFail();
-    //return redirect('usuarios');
+    //Log::info('horarioAux antes');
+    //Log::info($horarioAux);
+
+    $affected = DB::table('horarios')
+      ->where('id', $horarioAux->first()->id)
+      ->update(['isDisponible' => false]);
+
+    //Log::info('horarioNuevo despues');
+    //Log::info($affected);
+
+    $sesionesAux = DB::table('sesions')
+      ->where('sesions.paciente_id', $request->paciente_id)
+      ->orderBy('sesions.updated_at', 'desc')
+      ->get();
+
+    if (
+      is_null($sesionesAux->first()->fecha_hora_inicio) &&
+      $sesionesAux->first()->psicologo_id == $request->psicologo_id
+    ) {
+      Log::info('asignar valores a sesion existente');
+      $affected2 = DB::table('sesions')
+        ->where('id', $sesionesAux->first()->id)
+        ->update([
+          'estado' => 'solicitada',
+          'fecha_hora_inicio' => $arrayAuxiliar[0],
+          'fecha_hora_fin' => $arrayAuxiliar[1],
+          'solicitante' => 'paciente',
+        ]);
+      Log::info('asignados exitosamente');
+      Log::info($affected2);
+    } else {
+      Log::info('crear sesion desde 0');
+      $sesion = new Sesion();
+      $sesion->estado = 'solicitada';
+      $sesion->pago_confirmado = false;
+      $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
+      $sesion->fecha_hora_fin = $arrayAuxiliar[1];
+      $sesion->paciente_id = $request->paciente_id;
+      $sesion->psicologo_id = $request->psicologo_id;
+      $sesion->solicitante = 'paciente';
+      if (
+        $sesionesAux->first()->cancelador == 'paciente' &&
+        $sesionesAux->first()->psicologo_id == $request->psicologo_id &&
+        $sesionesAux->first()->pago_confirmado == false
+      ) {
+        $sesion->contador_cancelaciones =
+          1 + $sesionesAux->first()->contador_cancelaciones;
+      } else {
+        $sesion->contador_cancelaciones = 0;
+      }
+      Log::info('objeto lleno');
+      Log::info($sesion);
+      $sesion->saveOrFail();
+    }
+
+    return redirect('homePaciente');
   }
 
   //asignar psicologo a paciente
