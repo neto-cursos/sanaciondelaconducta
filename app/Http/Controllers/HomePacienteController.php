@@ -54,6 +54,7 @@ class HomePacienteController extends Controller
       ->join('pacientes', 'sesions.paciente_id', '=', 'pacientes.id')
       ->join('users', 'pacientes.user_id', '=', 'users.id')
       ->where('isTerminado', 0)
+      ->where('sesions.paciente_id', $obj->first()->id)
       ->get();
 
     return Inertia::render('HomePaciente', [
@@ -93,6 +94,7 @@ class HomePacienteController extends Controller
     $pago->save();
     //Log::info('obj nuevo');
     //Log::info($pago);
+    return redirect('homePaciente');
   }
 
   //solicitar sesion

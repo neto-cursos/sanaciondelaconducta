@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import AppLayout from '@/Layouts/AppLayout';
 import LogoLayout from '@/Layouts/LogoLayout';
-import TablaUsuarios from '@/Components/TablaUsuarios';
 import Titulo from '@/Components/Titulo';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
