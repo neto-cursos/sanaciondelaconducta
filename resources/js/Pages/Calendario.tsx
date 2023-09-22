@@ -45,7 +45,7 @@ console.log(horarios)
   const calendar = new Calendar('#calendar', {
   defaultView: 'week',
   useFormPopup: false,
-  useDetailPopup: true,
+  useDetailPopup: false,
   isReadOnly: true,
   usageStatistics: false,
   eventFilter: (event) => event.isVisible==true!!,
@@ -64,8 +64,8 @@ console.log(horarios)
     collapseDuplicateEvents:false,
   },
   gridSelection: {
-    enableDblClick: true,
-    enableClick: true,
+    enableDblClick: false,
+    enableClick: false,
   },
   
   /*timezone: {
@@ -170,7 +170,11 @@ for(let i = 0; i < sesions.length; i++) {
 
 for(let i = 0; i < horarios.length; i++) {
 
-
+  if(new Date(horarios[i].fecha_hora_fin)>auxFecha){
+    console.log("mayor")
+  }else{
+    console.log("menor")
+  }
 
     auxEventos.push({
       title: "libre",

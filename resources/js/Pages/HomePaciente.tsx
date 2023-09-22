@@ -48,22 +48,18 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     console.log(pagos_pendientes)
 
     const route = useRoute();
-  const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
-  const fecha_hora_inicioInput= useRef(null)
-  const fecha_hora_finInput= useRef(null)
+    const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
 
-  const servicioInput= useRef(null)
-  const institucionInput= useRef(null)
-  const convenioInput= useRef(null)
-  const{data,setData,put,post,delete:destroy,processing,reset,errors} = useForm({
-    operacion:'',
+    const servicioInput= useRef(null)
+    const institucionInput= useRef(null)
+    const convenioInput= useRef(null)
+
+    const{data,setData,put,post,delete:destroy,processing,reset,errors} = useForm({
     estado:'pendiente',
     pago_confirmado:0,
-    fecha_hora_inicio:'',
-    fecha_hora_fin:'',
     paciente_id:paciente_id,
     psicologo_id:psicologo_id,
-    //
+    
     servicio:'',
     institucion:'',
     convenio:'',
@@ -105,57 +101,18 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
           setSwitchVisibility("tablapsicologos");
         }else{
           //verificar si el usuario debe compensar una sesion y si es true form de pago y mandar solicitud
-          if(sesiones[0].estado == "cancelada" && sesiones[0].contador_cancelaciones==2 && sesiones[0].psicologo_id==psicologo_id){
-            alert("debe pagar")
+          if(sesiones[0].estado == "cancelada" &&
+           sesiones[0].contador_cancelaciones==2 &&
+           sesiones[0].psicologo_id==psicologo_id &&
+           sesiones[0].pago_confirmado==false){
+            setSwitchVisibility("formpago");
           }else{
-            console.log("continuar")
+            console.log("agendar sesion")
           }
         }
       }
     }
   };  
-
-  //si el usuario tiene todos los pagos confirmados y no debe compensar
-
-  //cuando el usuario tiene psicologo puede finalmente agendar sesion mostrando calendario
-
-  const mostrarFormSesion = (obj: any) => {
-    setSwitchVisibility("formSesion");
-    setData({
-      fecha_hora_inicio:obj.fecha_hora_inicio,
-      fecha_hora_fin:obj.fecha_hora_fin
-});
-  };
-
-  const ocultarFormSesion = () => {
-    setSwitchVisibility("");
-  };
-
-  const mostrarFormPsicologo = (obj: any) => {
-    setSwitchVisibility("formPsicologo");
-    /*setData({
-
-});*/
-  };
-
-  const ocultarFormPsicologo = () => {
-    setSwitchVisibility("");
-  };
-
-  const mostrarFormPago = (obj: any) => {
-    setSwitchVisibility("formPago");
-    setData({
-      servicio:obj.servicio,
-      institucion:obj.institucion,
-      convenio:obj.convenio,
-});
-  };
-
-  const ocultarFormPago = () => {
-    setSwitchVisibility("");
-  };
-
-
 
   const update = (e:any) => {
     e.preventDefault();
@@ -177,7 +134,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
 
   const save = (e:any) => {
     e.preventDefault();
-    //setSwitchVisibility(true);
+    setSwitchVisibility("tablaboton");
     post(route('homePaciente.store'),{
       onSuccess:()=>{
         alert("Exito")
@@ -207,7 +164,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
               <PrimaryButton className={`${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`} onClick={()=>programarSesion()}>Programar Sesión</PrimaryButton>
               
               <br />
-             <form className="w-[350px]" onSubmit={save}>
+             <form className={`w-[350px] ${switchVisibility=="formpago" ? 'visible' : 'collapse'}`} onSubmit={save}>
               <div className="mt-4"> 
                 <InputLabel htmlFor="servicio">Servicio</InputLabel>
                   <TextInput
@@ -258,83 +215,14 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
                     <InputError className="mt-2" message={errors.convenio} />
                   </div>
                 <br />
-               
-                {/*  <label>
-                    Checkbox: <input type="checkbox" name="myCheckbox" defaultChecked={true} />
-                  </label>
-                  <hr />
-                  <p>
-                    Radio buttons:
-                    <label><input type="radio" name="myRadio" value="option1" /> Option 1</label>
-                    <label><input type="radio" name="myRadio" value="option2" defaultChecked={true} /> Option 2</label>
-                    <label><input type="radio" name="myRadio" value="option3" /> Option 3</label>
-                  </p>
-                  <hr />
-                  <button type="reset">Reset form</button>
-                  <button type="submit">Submit form</button>
-                      */}
 
-                <CustomButton onClick={()=>save}>Editar usuario</CustomButton>
+                <CustomButton onClick={()=>save}>Enviar comprobante de pago</CustomButton>
               </form>
               <br/>
-              <PrimaryButton   onClick={()=>ocultarFormPago()}>Cancelar</PrimaryButton>
+              <PrimaryButton className={`${switchVisibility=="oculto" ? 'visible' : 'collapse'}`}  onClick={()=>console.log("a")}>Cancelar</PrimaryButton>
 
 
               <br />
-             <form className="w-[350px]" onSubmit={update}>
-              <div className="mt-4"> 
-                <InputLabel htmlFor="fecha_hora_inicio">Fecha Hora Inicio</InputLabel>
-                  <TextInput
-                    id="fecha_hora_inicio"
-                    name="fecha_hora_inicio"
-                    ref={fecha_hora_inicioInput}
-                    className="mt-1 block w-full isFocused "
-                    value={data.fecha_hora_inicio}
-                  onChange={e => setData('fecha_hora_inicio', e.target.value)}
-                    required
-                    
-                    placeholder="fecha hora inicio"
-                  />
-                  <InputError className="mt-2" message={errors.fecha_hora_inicio} />
-                </div>
-                <br />
-
-                <div className="mt-4"> 
-                <InputLabel htmlFor="fecha_hora_fin">Fecha Hora Fin</InputLabel>
-                  <TextInput
-                    id="fecha_hora_fin"
-                    name="fecha_hora_fin"
-                    ref={fecha_hora_finInput}
-                    className="mt-1 block w-full isFocused "
-                    value={data.fecha_hora_fin}
-                  onChange={e => setData('fecha_hora_fin', e.target.value)}
-                    required
-                    
-                    placeholder="fecha hora fin"
-                  />
-                  <InputError className="mt-2" message={errors.fecha_hora_fin} />
-                </div>
-                <br />
-               
-                {/*  <label>
-                    Checkbox: <input type="checkbox" name="myCheckbox" defaultChecked={true} />
-                  </label>
-                  <hr />
-                  <p>
-                    Radio buttons:
-                    <label><input type="radio" name="myRadio" value="option1" /> Option 1</label>
-                    <label><input type="radio" name="myRadio" value="option2" defaultChecked={true} /> Option 2</label>
-                    <label><input type="radio" name="myRadio" value="option3" /> Option 3</label>
-                  </p>
-                  <hr />
-                  <button type="reset">Reset form</button>
-                  <button type="submit">Submit form</button>
-                      */}
-
-                <CustomButton onClick={()=>update}>Editar usuario</CustomButton>
-              </form>
-              <br/>
-              <PrimaryButton   onClick={()=>ocultarFormSesion()}>Cancelar</PrimaryButton>
 
               
               <br/>

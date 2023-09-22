@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Prueba;
 use App\Models\PacienteTutor;
+use App\Models\Pago;
 use App\Models\Paciente;
 use Illuminate\Support\Facades\DB;
 
@@ -67,8 +68,29 @@ class HomePacienteController extends Controller
   //funcion para pago de sesion cancelada
   public function store(Request $request)
   {
-    Log::info('store');
-    Log::info($request);
+    //Log::info('request');
+    //Log::info($request);
+
+    $sesionesAux = DB::table('sesions')
+      ->where('sesions.paciente_id', $request->paciente_id)
+      ->orderBy('sesions.updated_at', 'desc')
+      ->get();
+
+    /*Log::info('sesiones aux');
+    Log::info($sesionesAux);
+
+    Log::info('sesion id');
+    Log::info($sesionesAux->first()->id);*/
+
+    $pago = new Pago();
+    $pago->sesion_id = $sesionesAux->first()->id;
+    $pago->servicio = $request->servicio;
+    $pago->institucion = $request->institucion;
+    $pago->convenio = $request->convenio;
+    $pago->isTerminado = 0;
+    $pago->save();
+    //Log::info('obj nuevo');
+    //Log::info($pago);
   }
 
   //programar sesion

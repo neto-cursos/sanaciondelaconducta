@@ -14,16 +14,20 @@ class CalendarioController extends Controller
   {
     //recuperar sesiones del psicologo
     $sesions = DB::table('sesions')
-      ->leftJoin('pacientes', 'sesions.paciente_id', '=', 'pacientes.user_id')
-      ->leftJoin('users', 'pacientes.user_id', '=', 'users.id')
-      ->where('sesions.psicologo_id', Auth::id())
+      ->join('psicologos', 'sesions.psicologo_id', '=', 'psicologos.id')
+      ->join('users', 'psicologos.user_id', '=', 'users.id')
+      ->where('users.id', Auth::id())
+      ->where('sesions.estado', 'programada')
       ->get();
 
     //recuperar disponibilidad de horarios del psicologo
     $horarios = DB::table('horarios')
-      ->where('psicologo_id', Auth::id())
+      ->where('psicologo_id', $sesions->first()->psicologo_id)
       ->where('isDisponible', 1)
       ->get();
+
+    //Log::info('aaaaaaaaaaaaaaaaaaaa');
+    //Log::info($sesions->first()->psicologo_id);
 
     return Inertia::render('Calendario', [
       'sesions' => $sesions,
