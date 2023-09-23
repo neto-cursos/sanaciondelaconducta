@@ -20,43 +20,29 @@ class PacientesController extends Controller
   public function index()
   {
     $user = Auth::user();
-    Log::info('usuario');
-    Log::info($user);
+    //Log::info('usuario');
+    //Log::info($user);
 
     $idPsicologo = DB::table('users')
       ->select('psicologos.id')
       ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
       ->where('users.id', Auth::id())
       ->get();
-    Log::info('id Psicologo');
-    Log::info($idPsicologo);
+    //Log::info('id Psicologo');
+    //Log::info($idPsicologo);
 
     $pacientes = DB::table('pacientes')
-      ->selectRaw(
-        'pacientes.id,name,apellidos,ci,isAlta,bloqueos.paciente_id as idpacientebloqueado, bloqueos.psicologo_id as idpsicologobloqueador, bloqueos.isBloqueado'
-      )
+      ->selectRaw('pacientes.id,name,apellidos,ci,isAlta')
       ->join('users', 'users.id', '=', 'pacientes.user_id')
-      ->leftJoin(
-        'bloqueos',
-        'bloqueos.psicologo_id',
-        '=',
-        'pacientes.psicologo_id'
-      )
       ->where('pacientes.psicologo_id', $idPsicologo->first()->id)
       ->get();
 
-    Log::info('obj de pacientes del tutor');
-    Log::info($pacientes);
+    //Log::info('obj de pacientes del tutor');
+    //Log::info($pacientes);
 
     $objPre = DB::table('pacientes')
       ->selectRaw('pacientes.id')
       ->join('users', 'users.id', '=', 'pacientes.user_id')
-      ->leftJoin(
-        'bloqueos',
-        'bloqueos.psicologo_id',
-        '=',
-        'pacientes.psicologo_id'
-      )
       ->where('pacientes.psicologo_id', $idPsicologo->first()->id)
       ->get();
 
@@ -70,11 +56,14 @@ class PacientesController extends Controller
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
-    Log::info('sesiones');
-    Log::info($sesiones);
+    //Log::info('sesiones');
+    //Log::info($sesiones);
 
     //pagos pendientes
     $pagos_pendientes = DB::table('pagos')
+      ->selectRaw(
+        'pagos.id as pago_id, sesions.id as sesion_id, sesions.paciente_id as paciente_id, sesions.psicologo_id as psicologo_id'
+      )
       ->join('sesions', 'pagos.sesion_id', '=', 'sesions.id')
       ->join('pacientes', 'sesions.paciente_id', '=', 'pacientes.id')
       ->join('users', 'pacientes.user_id', '=', 'users.id')
@@ -82,11 +71,24 @@ class PacientesController extends Controller
       ->whereIn('sesions.paciente_id', $obj)
       ->get();
 
+    //Log::info('pagos pendientes');
+    //Log::info($pagos_pendientes);
+
+    //bloqueos activos del psicologo
+    $bloqueos = DB::table('bloqueos')
+      ->where('isBloqueado', 1)
+      ->where('psicologo_id', $idPsicologo->first()->id)
+      ->get();
+
+    //Log::info('bloqueos');
+    //Log::info($bloqueos);
+
     return Inertia::render('Pacientes', [
       'user' => $user,
       'pacientes' => $pacientes,
       'sesiones' => $sesiones,
       'pagos_pendientes' => $pagos_pendientes,
+      'bloqueos' => $bloqueos,
     ]);
   }
 
@@ -122,9 +124,9 @@ class PacientesController extends Controller
     Log::info('horarioAux antes');
     Log::info($horarioAux);
 
-    $affected = DB::table('horarios')
+    /*$affected = DB::table('horarios')
       ->where('id', $horarioAux->first()->id)
-      ->update(['isDisponible' => false]);
+      ->update(['isDisponible' => false]);*/
 
     Log::info('horarioNuevo despues');
     Log::info($affected);
@@ -143,14 +145,14 @@ class PacientesController extends Controller
         $psicologoDePaciente->first()->psicologo_id
     ) {
       Log::info('asignar valores a sesion existente');
-      $affected2 = DB::table('sesions')
+      /*$affected2 = DB::table('sesions')
         ->where('id', $sesionesAux->first()->id)
         ->update([
           'estado' => 'solicitada',
           'fecha_hora_inicio' => $arrayAuxiliar[0],
           'fecha_hora_fin' => $arrayAuxiliar[1],
           'solicitante' => 'paciente',
-        ]);
+        ]);*/
       Log::info('asignados exitosamente');
       Log::info($affected2);
     } else {
@@ -176,9 +178,9 @@ class PacientesController extends Controller
       }
       Log::info('objeto lleno');
       Log::info($sesion);
-      $sesion->saveOrFail();
+      //$sesion->saveOrFail();
     }
 
-    return redirect('pacientes');
+    //return redirect('pacientes');
   }
 }

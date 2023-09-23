@@ -100,6 +100,10 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
           setSwitchVisibility("tablapsicologos");
         }else{
           //verificar si el usuario debe compensar una sesion y si es true form de pago y mandar solicitud
+          if(sesiones.length == 0){
+            console.log("agendar sesion")
+            setSwitchVisibility("calendario");
+          }else{
           if(sesiones[0].estado == "cancelada" &&
            sesiones[0].contador_cancelaciones==2 &&
            sesiones[0].psicologo_id==psicologo_id &&
@@ -113,6 +117,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
               setSwitchVisibility("calendario");
             }
           }
+        }
         }
       }
     }

@@ -92,6 +92,10 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
   };
 
   const programarSesion = () => {
+    if(sesiones.length == 0){
+      console.log("agendar sesion")
+      setSwitchVisibility("calendario");
+    }else{
     //check si hay una sesion programada
    let auxFecha = new Date();
 
@@ -102,8 +106,12 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     if(sesiones[i].paciente_id==selected){
       fechaSesion = new Date(sesiones[i].fecha_hora_fin);
     }
-   }while(isNull(fechaSesion));
+   }while(isNull(fechaSesion) && i<(sesiones.length)-1);
 
+   if(isNull(fechaSesion)){
+    console.log("agendar sesion")
+    setSwitchVisibility("calendario");
+   }else{
     if(sesiones[i].estado == "programada" && fechaSesion>auxFecha){
       alert("ya tiene una sesion programada")
     }else{
@@ -145,6 +153,8 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
         }
       }
     }
+  }
+}
   };  
 
   const update = (/*e:any*/) => {

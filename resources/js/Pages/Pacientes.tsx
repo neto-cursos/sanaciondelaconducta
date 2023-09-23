@@ -16,6 +16,7 @@ interface Props{
     pacientes:Array<any>;
     sesiones:any;
     pagos_pendientes:Array<JSON>;
+    bloqueos:Array<any>;
 }
 
 /*interface User{
@@ -29,7 +30,7 @@ interface Props{
   ci: string
 }*/
 
-export default function Pacientes({user,pacientes,sesiones,pagos_pendientes}:Props) {
+export default function Pacientes({user,pacientes,sesiones,pagos_pendientes,bloqueos}:Props) {
     console.log("user")
     console.log(user)
     console.log("pacientes")
@@ -40,6 +41,8 @@ export default function Pacientes({user,pacientes,sesiones,pagos_pendientes}:Pro
     console.log(sesiones[0].id)
     console.log("pagos pendientes")
     console.log(pagos_pendientes)
+    console.log("bloqueos")
+    console.log(bloqueos)
 
     const route = useRoute();
     const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
@@ -53,24 +56,33 @@ export default function Pacientes({user,pacientes,sesiones,pagos_pendientes}:Pro
 
   console.log("data inicializada")
   console.log(data)
-  const calendario = (item:any) => {
+  const calendario = (id:any) => {
 //set data
-console.log("item:"+item);
-  }
+setData({
+  paciente_id:id
+});
+console.log("data actualizada"+data);
+if(sesiones.length == 0){
+  console.log("agendar sesion")
+  setSwitchVisibility("calendario");
+}else{
 
-  const programarSesion = () => {
     //check si hay una sesion programada
- /*  let auxFecha = new Date();
+   let auxFecha = new Date();
 
    let i = -1;
    let fechaSesion = null;
    do{
     i++;
-    if(sesiones[i].paciente_id==selected){
+    if(sesiones[i].paciente_id==id){
       fechaSesion = new Date(sesiones[i].fecha_hora_fin);
     }
-   }while(isNull(fechaSesion));
+   }while(isNull(fechaSesion) && i<(sesiones.length)-1);
 
+   if(isNull(fechaSesion)){
+    console.log("agendar sesion")
+    setSwitchVisibility("calendario");
+   }else{
     if(sesiones[i].estado == "programada" && fechaSesion>auxFecha){
       alert("ya tiene una sesion programada")
     }else{
@@ -91,12 +103,12 @@ console.log("item:"+item);
         }while(isNull(psicologoDePaciente) && j<(pacientes.length)-1);*/
 
         //si el usuario no tiene psicologo elegir uno->asignar
-        /*if(psicologoDePaciente==null){
+        if(psicologoDePaciente==null){
           console.log("asignar psicologo")
           setSwitchVisibility("tablapsicologos");
-        }else{*/
+        }else{
           //verificar si el usuario debe compensar una sesion y si es true form de pago y mandar solicitud
-         /* if(sesiones[i].estado == "cancelada" &&
+          if(sesiones[i].estado == "cancelada" &&
            sesiones[i].contador_cancelaciones==2 &&
            sesiones[i].psicologo_id==psicologoDePaciente &&
            sesiones[i].pago_confirmado==false){
@@ -111,12 +123,13 @@ console.log("item:"+item);
           }
         }
       }
-    }*/
+    }
+  }
+  }
   };  
 
-  const update = (/*e:any*/item:any) => {
+  const update = (/*e:any*/) => {
     //e.preventDefault();
-    console.log(item);
     setSwitchVisibility("tablaboton");
     put(route('pacientes.update','2023-11-04 14:00:00,2023-11-04 15:00:00'),{
       onSuccess:()=>{
@@ -133,6 +146,20 @@ console.log("item:"+item);
     });
   };
 
+  const isBloqueado = (idPaciente:any) => {
+    if(bloqueos.length==0){
+      return false;
+    }
+    let i=-1
+    do{
+      i++;
+      if(bloqueos[i].paciente_id==idPaciente){
+        return true;
+      }
+    }while(i<(bloqueos.length)-1);
+    return false;
+      }
+
     return (
       <LogoLayout>
         <AppLayout
@@ -142,7 +169,9 @@ console.log("item:"+item);
             <div className={` min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900`}>
               <Titulo>Pacientes</Titulo>
               <br />
-
+              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Calendario</PrimaryButton>
+              <br />
+              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>setSwitchVisibility("tablaboton")}>Cancelar</PrimaryButton>
               <table className={`table-auto ${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`}>
 
                 <thead>
@@ -163,10 +192,10 @@ console.log("item:"+item);
                 <td>{item.ci}</td>
                 <td>{item.name}</td>
                 <td>{item.apellidos}</td>
-                <td>{item.estado}</td>
-                <td><PrimaryButton className={`table-auto ${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`} onClick={()=>calendario(item.id)}>Programar sesión</PrimaryButton></td>
-                <td><PrimaryButton className={`table-auto ${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`} onClick={()=>console.log("bloquear:"+item.id)}>Bloquear</PrimaryButton></td>
-                <td><PrimaryButton className={`table-auto ${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`} onClick={()=>console.log("dar de alta:"+item.id)}>Dar de alta</PrimaryButton></td>
+                <td className={`${isBloqueado(item.id) ? 'bg-customVerdeOscuro' : item.isAlta==false ? 'bg-customMoradoClaro': 'bg-customMoradoOscuro'}`}>{`${isBloqueado(item.id) ? 'bloqueado' : item.isAlta==false ? 'disponible': 'dado de alta'}`}</td>
+                <td><PrimaryButton className={`${item.isAlta==false && isBloqueado(item.id) == false ? 'visible' : 'collapse'}`} onClick={()=>calendario(item.id)}>Programar sesión</PrimaryButton></td>
+                <td><PrimaryButton className={`${item.isAlta==false && isBloqueado(item.id) == false ? 'visible' : 'collapse'}`} onClick={()=>console.log("bloquear:"+item.id)}>Bloquear</PrimaryButton></td>
+                <td><PrimaryButton className={` ${item.isAlta==false && isBloqueado(item.id) == false ? 'visible' : 'collapse'}`} onClick={()=>console.log("dar de alta:"+item.id)}>Dar de alta</PrimaryButton></td>
                 </tr>
                     
                 ))}
