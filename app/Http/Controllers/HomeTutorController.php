@@ -81,12 +81,29 @@ class HomeTutorController extends Controller
       ->whereIn('sesions.paciente_id', $obj)
       ->get();
 
+    $psicologosAntes = DB::table('psicologos')
+      ->selectRaw('psicologos.id')
+      ->where('psicologos.estado', 'activo')
+      ->get();
+
+    $transformPsicologos = [];
+    foreach ($psicologosAntes as $objAuxi2) {
+      $transformPsicologos[] = (array) $objAuxi2;
+    }
+
+    //recuperar disponibilidad de horarios del psicologo
+    $horarios = DB::table('horarios')
+      ->whereIn('psicologo_id', $transformPsicologos)
+      ->where('isDisponible', 1)
+      ->get();
+
     return Inertia::render('HomeTutor', [
       'user' => $user,
       'pacientes' => $pacientes,
       'sesiones' => $sesiones,
       'psicologos' => $psicologos,
       'pagos_pendientes' => $pagos_pendientes,
+      'horarios' => $horarios,
     ]);
     //  Log::info('LOG EXAMPLE');
   }

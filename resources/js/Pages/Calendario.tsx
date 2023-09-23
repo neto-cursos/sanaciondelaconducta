@@ -185,7 +185,7 @@ for(let i = 0; i < horarios.length; i++) {
 
   }
 
-calendar.createEvents(auxEventos);
+  calendar.createEvents(auxEventos);
 
 const previousWeek = () => {
   calendar.prev()

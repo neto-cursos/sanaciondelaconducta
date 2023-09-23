@@ -57,6 +57,12 @@ class HomePacienteController extends Controller
       ->where('sesions.paciente_id', $obj->first()->id)
       ->get();
 
+    //recuperar disponibilidad de horarios del psicologo
+    $horarios = DB::table('horarios')
+      ->where('psicologo_id', $obj->first()->psicologo_id)
+      ->where('isDisponible', 1)
+      ->get();
+
     return Inertia::render('HomePaciente', [
       'user' => $user,
       'psicologo_id' => $obj->first()->psicologo_id,
@@ -64,6 +70,7 @@ class HomePacienteController extends Controller
       'sesiones' => $sesiones,
       'psicologos' => $psicologos,
       'pagos_pendientes' => $pagos_pendientes,
+      'horarios' => $horarios,
     ]);
     //  Log::info('LOG EXAMPLE');
   }

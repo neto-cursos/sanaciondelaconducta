@@ -83,12 +83,19 @@ class PacientesController extends Controller
     //Log::info('bloqueos');
     //Log::info($bloqueos);
 
+    //recuperar disponibilidad de horarios del psicologo
+    $horarios = DB::table('horarios')
+      ->where('psicologo_id', $idPsicologo->first()->id)
+      ->where('isDisponible', 1)
+      ->get();
+
     return Inertia::render('Pacientes', [
       'user' => $user,
       'pacientes' => $pacientes,
       'sesiones' => $sesiones,
       'pagos_pendientes' => $pagos_pendientes,
       'bloqueos' => $bloqueos,
+      'horarios' => $horarios,
     ]);
   }
 
@@ -103,13 +110,11 @@ class PacientesController extends Controller
     Log::info($arrayAuxiliar[0]);
     Log::info('fecha hora fin');
     Log::info($arrayAuxiliar[1]);
-    Log::info('id paciente de tutor');
-    Log::info($arrayAuxiliar[2]);
 
     $psicologoDePaciente = DB::table('pacientes')
-      ->where('id', $arrayAuxiliar[2])
+      ->where('id', $request->paciente_id)
       ->get();
-    Log::info('pacienteeeeeeeee');
+    Log::info('psicologo obj');
     Log::info($psicologoDePaciente);
     Log::info('id psicologo de pacienteeeeeeeeeeee');
     Log::info($psicologoDePaciente->first()->psicologo_id);
@@ -124,15 +129,15 @@ class PacientesController extends Controller
     Log::info('horarioAux antes');
     Log::info($horarioAux);
 
-    /*$affected = DB::table('horarios')
+    $affected = DB::table('horarios')
       ->where('id', $horarioAux->first()->id)
-      ->update(['isDisponible' => false]);*/
+      ->update(['isDisponible' => false]);
 
     Log::info('horarioNuevo despues');
     Log::info($affected);
 
     $sesionesAux = DB::table('sesions')
-      ->where('sesions.paciente_id', $arrayAuxiliar[2])
+      ->where('sesions.paciente_id', $request->paciente_id)
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
@@ -145,14 +150,14 @@ class PacientesController extends Controller
         $psicologoDePaciente->first()->psicologo_id
     ) {
       Log::info('asignar valores a sesion existente');
-      /*$affected2 = DB::table('sesions')
+      $affected2 = DB::table('sesions')
         ->where('id', $sesionesAux->first()->id)
         ->update([
           'estado' => 'solicitada',
           'fecha_hora_inicio' => $arrayAuxiliar[0],
           'fecha_hora_fin' => $arrayAuxiliar[1],
-          'solicitante' => 'paciente',
-        ]);*/
+          'solicitante' => 'psicologo',
+        ]);
       Log::info('asignados exitosamente');
       Log::info($affected2);
     } else {
@@ -162,9 +167,9 @@ class PacientesController extends Controller
       $sesion->pago_confirmado = false;
       $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
       $sesion->fecha_hora_fin = $arrayAuxiliar[1];
-      $sesion->paciente_id = $arrayAuxiliar[2];
+      $sesion->paciente_id = $request->paciente_id;
       $sesion->psicologo_id = $psicologoDePaciente->first()->psicologo_id;
-      $sesion->solicitante = 'paciente';
+      $sesion->solicitante = 'psicologo';
       if (
         $sesionesAux->first()->cancelador == 'paciente' &&
         $sesionesAux->first()->psicologo_id ==
@@ -178,9 +183,9 @@ class PacientesController extends Controller
       }
       Log::info('objeto lleno');
       Log::info($sesion);
-      //$sesion->saveOrFail();
+      $sesion->saveOrFail();
     }
 
-    //return redirect('pacientes');
+    return redirect('pacientes');
   }
 }
