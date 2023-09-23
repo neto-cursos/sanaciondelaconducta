@@ -15,7 +15,7 @@ use App\Models\Horario;
 use App\Models\Sesion;
 use Illuminate\Support\Facades\DB;
 
-class HomeTutorController extends Controller
+class PacientesController extends Controller
 {
   public function index()
   {
@@ -81,7 +81,7 @@ class HomeTutorController extends Controller
       ->whereIn('sesions.paciente_id', $obj)
       ->get();
 
-    return Inertia::render('HomeTutor', [
+    return Inertia::render('Pacientes', [
       'user' => $user,
       'pacientes' => $pacientes,
       'sesiones' => $sesiones,
@@ -117,7 +117,7 @@ class HomeTutorController extends Controller
     $pago->save();
     Log::info('obj nuevo');
     Log::info($pago);
-    return redirect('homeTutor');
+    return redirect('pacientes');
   }
 
   //solicitar sesion
@@ -209,7 +209,7 @@ class HomeTutorController extends Controller
       $sesion->saveOrFail();
     }
 
-    return redirect('homeTutor');
+    return redirect('pacientes');
   }
 
   //asignar psicologo a paciente
@@ -228,6 +228,6 @@ class HomeTutorController extends Controller
     Log::info('paciente luego de editar');
     Log::info($pac);
     $pac->saveOrFail();
-    return redirect('homeTutor');
+    return redirect('pacientes');
   }
 }

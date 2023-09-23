@@ -36,6 +36,7 @@ export default function AppLayout({
     [route('dashboard'),'Dashboard','dashboard','sinrol'],
     [route('homePaciente.index'),'Home Paciente','homePaciente.index','paciente'],
     [route('calendario.index'),'Calendario','calendario.index','psicologo'],
+    [route('pacientes.index'),'Pacientes','pacientes.index','psicologo'],
     [route('homeTutor.index'),'Home Tutor','homeTutor.index','tutor'],
     [route('homeAdministrador'),'Home Administrador','homeAdministrador','administrador'],
     [route('usuarios.index'),'Usuarios','usuarios.index','administrador'],

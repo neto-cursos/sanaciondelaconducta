@@ -30,7 +30,7 @@ interface Props{
   ci: string
 }*/
 
-export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pendientes}:Props) {
+export default function Pacientes({user,pacientes,sesiones,psicologos,pagos_pendientes}:Props) {
     console.log("user")
     console.log(user)
     console.log("paciente_id, psicologo_id, name, apellidos, ci")
@@ -76,7 +76,7 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
 
   const asignarPsicologo = (psicologo_id: any) => {
     setSwitchVisibility("tablaboton")
-    destroy(route('homeTutor.destroy',selected+","+psicologo_id),{
+    destroy(route('pacientes.destroy',selected+","+psicologo_id),{
       onSuccess:()=>{
         alert("Exito")
       },
@@ -150,7 +150,7 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
   const update = (/*e:any*/) => {
     //e.preventDefault();
     setSwitchVisibility("tablaboton");
-    put(route('homeTutor.update','2023-11-04 14:00:00,2023-11-04 15:00:00,'+selected),{
+    put(route('pacientes.update','2023-11-04 14:00:00,2023-11-04 15:00:00,'+selected),{
       onSuccess:()=>{
         alert("Exito")
       },
@@ -168,7 +168,7 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
   const save = (e:any) => {
     e.preventDefault();
     setSwitchVisibility("tablaboton");
-    post(route('homeTutor.store'),{
+    post(route('pacientes.store'),{
       onSuccess:()=>{
         alert("Exito")
       },
@@ -186,11 +186,11 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     return (
       <LogoLayout>
         <AppLayout
-          title="Tutor"
+          title="Pacientes de Psicologo"
         >
           <br/>
             <div className={` min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900`}>
-              <Titulo>Home Tutor</Titulo>
+              <Titulo>Pacientes</Titulo>
 
               <br />
 
