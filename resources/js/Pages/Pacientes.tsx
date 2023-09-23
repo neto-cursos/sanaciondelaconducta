@@ -368,7 +368,7 @@ const [date, setDate] = useState(1)
             <div className={` min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900`}>
               <Titulo>Pacientes</Titulo>
               <br />
-              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Calendario</PrimaryButton>
+              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Solicitar sesión</PrimaryButton>
               <br />
               <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>setSwitchVisibility("tablaboton")}>Cancelar</PrimaryButton>
               <table className={`table-auto ${switchVisibility=="tablaboton" ? 'visible' : 'collapse'}`}>

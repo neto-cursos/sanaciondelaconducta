@@ -474,7 +474,7 @@ const [date, setDate] = useState(1)
                 </tbody>
               </table>
 
-              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Calendario</PrimaryButton>
+              <PrimaryButton className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}  onClick={()=>update()}>Solicitar sesión</PrimaryButton>
 
               <br/>
               <div className={`flex-row ${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}>

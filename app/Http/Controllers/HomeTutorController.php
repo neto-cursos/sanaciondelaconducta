@@ -183,24 +183,7 @@ class HomeTutorController extends Controller
 
     Log::info('seseioness de pacienteeeee');
     Log::info($sesionesAux);
-
-    if (
-      is_null($sesionesAux->first()->fecha_hora_inicio) &&
-      $sesionesAux->first()->psicologo_id ==
-        $psicologoDePaciente->first()->psicologo_id
-    ) {
-      Log::info('asignar valores a sesion existente');
-      $affected2 = DB::table('sesions')
-        ->where('id', $sesionesAux->first()->id)
-        ->update([
-          'estado' => 'solicitada',
-          'fecha_hora_inicio' => $arrayAuxiliar[0],
-          'fecha_hora_fin' => $arrayAuxiliar[1],
-          'solicitante' => 'paciente',
-        ]);
-      Log::info('asignados exitosamente');
-      Log::info($affected2);
-    } else {
+    if (is_null($sesionesAux->first())) {
       Log::info('crear sesion desde 0');
       $sesion = new Sesion();
       $sesion->estado = 'solicitada';
@@ -210,22 +193,54 @@ class HomeTutorController extends Controller
       $sesion->paciente_id = $arrayAuxiliar[2];
       $sesion->psicologo_id = $psicologoDePaciente->first()->psicologo_id;
       $sesion->solicitante = 'paciente';
-      if (
-        $sesionesAux->first()->cancelador == 'paciente' &&
-        $sesionesAux->first()->psicologo_id ==
-          $psicologoDePaciente->first()->psicologo_id &&
-        $sesionesAux->first()->pago_confirmado == false
-      ) {
-        $sesion->contador_cancelaciones =
-          1 + $sesionesAux->first()->contador_cancelaciones;
-      } else {
-        $sesion->contador_cancelaciones = 0;
-      }
+      $sesion->contador_cancelaciones = 0;
+
       Log::info('objeto lleno');
       Log::info($sesion);
       $sesion->saveOrFail();
+    } else {
+      if (
+        is_null($sesionesAux->first()->fecha_hora_inicio) &&
+        $sesionesAux->first()->psicologo_id ==
+          $psicologoDePaciente->first()->psicologo_id
+      ) {
+        Log::info('asignar valores a sesion existente');
+        $affected2 = DB::table('sesions')
+          ->where('id', $sesionesAux->first()->id)
+          ->update([
+            'estado' => 'solicitada',
+            'fecha_hora_inicio' => $arrayAuxiliar[0],
+            'fecha_hora_fin' => $arrayAuxiliar[1],
+            'solicitante' => 'paciente',
+          ]);
+        Log::info('asignados exitosamente');
+        Log::info($affected2);
+      } else {
+        Log::info('crear sesion desde 0');
+        $sesion = new Sesion();
+        $sesion->estado = 'solicitada';
+        $sesion->pago_confirmado = false;
+        $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
+        $sesion->fecha_hora_fin = $arrayAuxiliar[1];
+        $sesion->paciente_id = $arrayAuxiliar[2];
+        $sesion->psicologo_id = $psicologoDePaciente->first()->psicologo_id;
+        $sesion->solicitante = 'paciente';
+        if (
+          $sesionesAux->first()->cancelador == 'paciente' &&
+          $sesionesAux->first()->psicologo_id ==
+            $psicologoDePaciente->first()->psicologo_id &&
+          $sesionesAux->first()->pago_confirmado == false
+        ) {
+          $sesion->contador_cancelaciones =
+            1 + $sesionesAux->first()->contador_cancelaciones;
+        } else {
+          $sesion->contador_cancelaciones = 0;
+        }
+        Log::info('objeto lleno');
+        Log::info($sesion);
+        $sesion->saveOrFail();
+      }
     }
-
     return redirect('homeTutor');
   }
 
