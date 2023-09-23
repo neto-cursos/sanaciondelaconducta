@@ -20,104 +20,74 @@ class PacientesController extends Controller
   public function index()
   {
     $user = Auth::user();
-    //Log::info('usuario');
-    //Log::info($user);
+    Log::info('usuario');
+    Log::info($user);
 
-    $objPre = DB::table('pacientes')
-      ->select('pacientes.id')
-      ->join(
-        'paciente_tutor',
-        'pacientes.id',
-        '=',
-        'paciente_tutor.paciente_id'
-      )
-      ->join('tutors', 'paciente_tutor.tutor_id', '=', 'tutors.id')
-      ->join('users', 'users.id', '=', 'tutors.user_id')
+    $idPsicologo = DB::table('users')
+      ->select('psicologos.id')
+      ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
       ->where('users.id', Auth::id())
       ->get();
+    Log::info('id Psicologo');
+    Log::info($idPsicologo);
 
-    //Log::info('obj de ids de tabla pacientes del tutor pre');
-    //Log::info($objPre);
+    $pacientes = DB::table('pacientes')
+      //puede programar sesion falta
+      ->selectRaw('pacientes.id,name,apellidos,ci,isAlta')
+      ->join('users', 'users.id', '=', 'pacientes.user_id')
+      ->where('pacientes.psicologo_id', $idPsicologo->first()->id)
+      ->get();
 
-    $obj = [];
-    foreach ($objPre as $objAuxi) {
+    /*$obj = [];
+    foreach ($pacientes as $objAuxi) {
       $obj[] = (array) $objAuxi;
-    }
+    }*/
 
-    //Log::info('obj de ids de tabla pacientes del tutor after');
-    //Log::info($obj);
+    Log::info('obj de pacientes del tutor');
+    Log::info($pacientes);
 
-    $sesiones = DB::table('sesions')
+    /*$sesiones = DB::table('sesions')
       ->whereIn('paciente_id', $obj)
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
-    //Log::info('sesiones');
-    //Log::info($sesiones);
+    Log::info('sesiones');
+    Log::info($sesiones);*/
 
     //pacientes del tutor info completa
-    $pacientes = DB::table('users')
+    /*$pacientes = DB::table('users')
       ->selectRaw('pacientes.id, pacientes.psicologo_id, name, apellidos, ci')
       ->join('pacientes', 'users.id', '=', 'pacientes.user_id')
       ->whereIn('pacientes.id', $obj)
-      ->get();
+      ->get();*/
 
     //conectar cv desde tabla archivos
-    $psicologos = DB::table('users')
+    /*$psicologos = DB::table('users')
       ->selectRaw(
         'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto,archivo,tipo_archivo'
       )
       ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
       ->leftjoin('archivos', 'archivos.psicologo_id', '=', 'psicologos.id')
       ->where('psicologos.estado', 'activo')
-      ->get();
+      ->get();*/
 
     //pagos pendientes
-    $pagos_pendientes = DB::table('pagos')
+    /*$pagos_pendientes = DB::table('pagos')
       ->join('sesions', 'pagos.sesion_id', '=', 'sesions.id')
       ->join('pacientes', 'sesions.paciente_id', '=', 'pacientes.id')
       ->join('users', 'pacientes.user_id', '=', 'users.id')
       ->where('isTerminado', 0)
       ->whereIn('sesions.paciente_id', $obj)
-      ->get();
+      ->get();*/
 
     return Inertia::render('Pacientes', [
       'user' => $user,
       'pacientes' => $pacientes,
-      'sesiones' => $sesiones,
+      /*'sesiones' => $sesiones,
       'psicologos' => $psicologos,
-      'pagos_pendientes' => $pagos_pendientes,
+      'pagos_pendientes' => $pagos_pendientes,*/
     ]);
     //  Log::info('LOG EXAMPLE');
-  }
-
-  //funcion para pago de sesion cancelada
-  public function store(Request $request)
-  {
-    Log::info('request');
-    Log::info($request);
-
-    $sesionesAux = DB::table('sesions')
-      ->where('sesions.paciente_id', $request->paciente_id)
-      ->orderBy('sesions.updated_at', 'desc')
-      ->get();
-
-    Log::info('sesiones aux');
-    Log::info($sesionesAux);
-
-    Log::info('sesion id');
-    Log::info($sesionesAux->first()->id);
-
-    $pago = new Pago();
-    $pago->sesion_id = $sesionesAux->first()->id;
-    $pago->servicio = $request->servicio;
-    $pago->institucion = $request->institucion;
-    $pago->convenio = $request->convenio;
-    $pago->isTerminado = 0;
-    $pago->save();
-    Log::info('obj nuevo');
-    Log::info($pago);
-    return redirect('pacientes');
   }
 
   //solicitar sesion
@@ -209,25 +179,6 @@ class PacientesController extends Controller
       $sesion->saveOrFail();
     }
 
-    return redirect('pacientes');
-  }
-
-  //asignar psicologo a paciente
-  public function destroy($params)
-  {
-    $arrayAux = explode(',', $params);
-    Log::info('id paciente');
-    Log::info($arrayAux[0]);
-    Log::info('id psicologo');
-    Log::info($arrayAux[1]);
-
-    $pac = Paciente::find($arrayAux[0]);
-    Log::info('paciente antes de editar');
-    Log::info($pac);
-    $pac->psicologo_id = $arrayAux[1];
-    Log::info('paciente luego de editar');
-    Log::info($pac);
-    $pac->saveOrFail();
     return redirect('pacientes');
   }
 }
