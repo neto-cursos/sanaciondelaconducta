@@ -32,62 +32,62 @@ class PacientesController extends Controller
     Log::info($idPsicologo);
 
     $pacientes = DB::table('pacientes')
-      //puede programar sesion falta
-      ->selectRaw('pacientes.id,name,apellidos,ci,isAlta')
+      ->selectRaw(
+        'pacientes.id,name,apellidos,ci,isAlta,bloqueos.paciente_id as idpacientebloqueado, bloqueos.psicologo_id as idpsicologobloqueador, bloqueos.isBloqueado'
+      )
       ->join('users', 'users.id', '=', 'pacientes.user_id')
+      ->leftJoin(
+        'bloqueos',
+        'bloqueos.psicologo_id',
+        '=',
+        'pacientes.psicologo_id'
+      )
       ->where('pacientes.psicologo_id', $idPsicologo->first()->id)
       ->get();
-
-    /*$obj = [];
-    foreach ($pacientes as $objAuxi) {
-      $obj[] = (array) $objAuxi;
-    }*/
 
     Log::info('obj de pacientes del tutor');
     Log::info($pacientes);
 
-    /*$sesiones = DB::table('sesions')
+    $objPre = DB::table('pacientes')
+      ->selectRaw('pacientes.id')
+      ->join('users', 'users.id', '=', 'pacientes.user_id')
+      ->leftJoin(
+        'bloqueos',
+        'bloqueos.psicologo_id',
+        '=',
+        'pacientes.psicologo_id'
+      )
+      ->where('pacientes.psicologo_id', $idPsicologo->first()->id)
+      ->get();
+
+    $obj = [];
+    foreach ($objPre as $objAuxi) {
+      $obj[] = (array) $objAuxi;
+    }
+
+    $sesiones = DB::table('sesions')
       ->whereIn('paciente_id', $obj)
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
     Log::info('sesiones');
-    Log::info($sesiones);*/
-
-    //pacientes del tutor info completa
-    /*$pacientes = DB::table('users')
-      ->selectRaw('pacientes.id, pacientes.psicologo_id, name, apellidos, ci')
-      ->join('pacientes', 'users.id', '=', 'pacientes.user_id')
-      ->whereIn('pacientes.id', $obj)
-      ->get();*/
-
-    //conectar cv desde tabla archivos
-    /*$psicologos = DB::table('users')
-      ->selectRaw(
-        'psicologos.id, name, apellidos,profile_photo_path,fecha_nacimiento,fecha_funcion_titulo,universidad,ciudad_residencia,departamento_residencia,pais_residencia,descripcion_cv,foto,archivo,tipo_archivo'
-      )
-      ->join('psicologos', 'users.id', '=', 'psicologos.user_id')
-      ->leftjoin('archivos', 'archivos.psicologo_id', '=', 'psicologos.id')
-      ->where('psicologos.estado', 'activo')
-      ->get();*/
+    Log::info($sesiones);
 
     //pagos pendientes
-    /*$pagos_pendientes = DB::table('pagos')
+    $pagos_pendientes = DB::table('pagos')
       ->join('sesions', 'pagos.sesion_id', '=', 'sesions.id')
       ->join('pacientes', 'sesions.paciente_id', '=', 'pacientes.id')
       ->join('users', 'pacientes.user_id', '=', 'users.id')
       ->where('isTerminado', 0)
       ->whereIn('sesions.paciente_id', $obj)
-      ->get();*/
+      ->get();
 
     return Inertia::render('Pacientes', [
       'user' => $user,
       'pacientes' => $pacientes,
-      /*'sesiones' => $sesiones,
-      'psicologos' => $psicologos,
-      'pagos_pendientes' => $pagos_pendientes,*/
+      'sesiones' => $sesiones,
+      'pagos_pendientes' => $pagos_pendientes,
     ]);
-    //  Log::info('LOG EXAMPLE');
   }
 
   //solicitar sesion

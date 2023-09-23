@@ -14,9 +14,8 @@ import { isNull } from 'lodash';
 interface Props{
     user:JSON;
     pacientes:Array<any>;
-    /*sesiones:any;
-    psicologos:Array<JSON>;
-    pagos_pendientes:Array<JSON>;*/
+    sesiones:any;
+    pagos_pendientes:Array<JSON>;
 }
 
 /*interface User{
@@ -30,19 +29,17 @@ interface Props{
   ci: string
 }*/
 
-export default function Pacientes({user,pacientes/*,sesiones,psicologos,pagos_pendientes*/}:Props) {
+export default function Pacientes({user,pacientes,sesiones,pagos_pendientes}:Props) {
     console.log("user")
     console.log(user)
     console.log("pacientes")
     console.log(pacientes)
-    /*console.log("sesiones")
+    console.log("sesiones")
     console.log(sesiones)
     console.log("ultima sesion id")
     console.log(sesiones[0].id)
-    console.log("psicologos")
-    console.log(psicologos)
     console.log("pagos pendientes")
-    console.log(pagos_pendientes)*/
+    console.log(pagos_pendientes)
 
     const route = useRoute();
     const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
