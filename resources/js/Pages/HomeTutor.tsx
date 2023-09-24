@@ -134,8 +134,8 @@ if(horarios.length>0 && !isNull(psico)){
 
 
 
-    if(sesiones.length == 0){
-      console.log("agendar sesion")
+    if(sesiones.length == 0 && !isNull(psico)){
+      console.log("agendar sesion, psico:"+psico+","+!isNull(psico))
       setSwitchVisibility("calendario");
     }else{
     //check si hay una sesion programada
@@ -150,10 +150,16 @@ if(horarios.length>0 && !isNull(psico)){
     }
    }while(isNull(fechaSesion) && i<(sesiones.length)-1);
 
-   if(isNull(fechaSesion)){
+   if(isNull(fechaSesion) && !isNull(psico)){
     console.log("agendar sesion")
     setSwitchVisibility("calendario");
    }else{
+    if(isNull(psico)){
+      console.log("asignar psicologo")
+      setSwitchVisibility("tablapsicologos");
+    }else{
+
+    
     if(sesiones[i].estado == "programada" && fechaSesion>auxFecha){
       alert("ya tiene una sesion programada")
     }else{
@@ -182,7 +188,8 @@ if(horarios.length>0 && !isNull(psico)){
           if(sesiones[i].estado == "cancelada" &&
            sesiones[i].contador_cancelaciones==2 &&
            sesiones[i].psicologo_id==psicologoDePaciente &&
-           sesiones[i].pago_confirmado==false){
+           sesiones[i].pago_confirmado==false &&
+           sesiones[i].cancelador=='paciente'){
             setSwitchVisibility("formpago");
           }else{
             if(sesiones[i].estado == "solicitada"){
@@ -195,6 +202,7 @@ if(horarios.length>0 && !isNull(psico)){
         }
       }
     }
+  }
   }
 }
   };  

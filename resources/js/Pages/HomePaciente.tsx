@@ -42,8 +42,6 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     console.log(paciente_id)
     console.log("sesiones")
     console.log(sesiones)
-    console.log("ultima sesion id")
-    console.log(sesiones[0].id)
     console.log("psicologos")
     console.log(psicologos)
     console.log("pagos pendientes")
@@ -67,7 +65,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     servicio:'',
     institucion:'',
     convenio:'',
-    sesion_id:sesiones[0].id
+    sesion_id:''
   })
 
   const asignarPsicologo = (psicologo_id: any) => {
@@ -88,6 +86,10 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
   };
 
   const programarSesion = () => {
+    if(sesiones.length == 0){
+      console.log("agendar sesion")
+      setSwitchVisibility("calendario");
+    }else{
     //check si hay una sesion programada
    let auxFecha = new Date();
    let fechaSesion = new Date(sesiones[0].fecha_hora_fin)
@@ -112,7 +114,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
           if(sesiones[0].estado == "cancelada" &&
            sesiones[0].contador_cancelaciones==2 &&
            sesiones[0].psicologo_id==psicologo_id &&
-           sesiones[0].pago_confirmado==false){
+           sesiones[0].pago_confirmado==false &&
+           sesiones[0].cancelador=='paciente'){
             setSwitchVisibility("formpago");
           }else{
             if(sesiones[0].estado == "solicitada"){
@@ -126,6 +129,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
         }
       }
     }
+  }
   };  
 
   const update = (/*e:any*/) => {

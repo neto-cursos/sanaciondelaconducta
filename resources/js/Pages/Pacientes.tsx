@@ -40,8 +40,8 @@ export default function Pacientes({user,pacientes,sesiones,pagos_pendientes,bloq
     console.log(pacientes)
     console.log("sesiones")
     console.log(sesiones)
-    console.log("ultima sesion id")
-    console.log(sesiones[0].id)
+    //console.log("ultima sesion id")
+    //console.log(sesiones[0].id)
     console.log("pagos pendientes")
     console.log(pagos_pendientes)
     console.log("bloqueos")
@@ -86,7 +86,6 @@ if(sesiones.length == 0){
    }while(isNull(fechaSesion) && i<(sesiones.length)-1);
 
    if(isNull(fechaSesion)){
-    console.log("entra donde no debe")
     console.log("agendar sesion")
     setSwitchVisibility("calendario");
    }else{
@@ -115,7 +114,8 @@ if(sesiones.length == 0){
           //verificar si el paciente debe compensar una sesion
           if(sesiones[i].estado == "cancelada" &&
            sesiones[i].contador_cancelaciones==2 &&
-           sesiones[i].pago_confirmado==false){
+           sesiones[i].pago_confirmado==false &&
+           sesiones[i].cancelador=='paciente'){
             alert("el usuario tiene un pago pendiente")
           }else{
             if(sesiones[i].estado == "solicitada"){

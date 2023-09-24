@@ -9,6 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import { useEffect } from 'react';
 
 interface Props{
   sesions:Array<any>;
@@ -16,6 +17,7 @@ interface Props{
 }
 
 export default function Calendario({sesions,horarios}:Props) {
+
 console.log("sesiones")
 console.log(sesions)
 console.log("horarios")
@@ -228,6 +230,10 @@ const changeDate = (date: Date) => {
   //2023-08-30T09:00:00
   //2023-08-30
 };
+//calendar.render()
+/*useEffect(() => {
+  calendar.render()
+}, []);*/
 
     return (
       <LogoLayout>
@@ -250,7 +256,7 @@ const changeDate = (date: Date) => {
               <br/>
 
               <div id="calendar" className="w-[1000px] h-[800px] bg-customMoradoClaro">
-                <div className='collapse'>calendar.render()</div>
+                
               </div>
             <div>Copyright (c) 2021 NHN Corp.</div>
             </div>
