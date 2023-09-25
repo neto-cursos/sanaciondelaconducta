@@ -114,7 +114,7 @@ const procesarItem = (event: any) => {
               
             </div>
             
-              <MyCalendar soloLectura={true} eventos={auxEventos} onClickItem={procesarItem}
+              <MyCalendar soloLectura={true} eventos={auxEventos} onClickItem={procesarItem} pintarSeleccion={false}
               />
                
               

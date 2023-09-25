@@ -7,6 +7,7 @@ interface Props{
     soloLectura:boolean;
     eventos: Array<any>;
     onClickItem: (item:any) =>void;
+    pintarSeleccion: boolean;
 }
 
   /*interface TimezoneConfig {
@@ -21,14 +22,16 @@ interface Props{
   }*/
 
 
-export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
-   /* console.log("llegaron los siguientes eventos")
-    console.log(eventos)*/
+export function MyCalendar({soloLectura,eventos,onClickItem,pintarSeleccion}:Props) {
+    console.log("llegaron los siguientes eventos")
+    console.log(eventos)
     const [startDate, setStartDate] = useState(new Date());
     const [year, setYear] = useState(2024)
     const [month, setMonth] = useState(0)
     const [date, setDate] = useState(1)
     const calendarRef = useRef<typeof Calendar>(null);
+
+    const [idPintado,setIdPintado]=useState(-1);
 
     function formatTime(time:any) {
         const hours = `${time.getHours()}`.padStart(2, '0');
@@ -51,6 +54,11 @@ export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
           id: 'cal3',
           name: 'sesion',
           backgroundColor: '#19757c',
+        },
+        {
+          id: 'cal4',
+          name: 'horario',
+          backgroundColor: 'red',
         },
       ];
 
@@ -94,7 +102,7 @@ export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
 
          const   template={
             time(event) {
-              const { start, end, title, isVisible } = event;
+              const { id,start, end, title, isVisible } = event;
         
                 return `<div style="color: black;">${formatTime(start)}-${formatTime(end)}</div>
                 <div style="color: black;">${title}</div>`;
@@ -119,11 +127,29 @@ export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
           };
 
           const onClickEvent: ExternalEventTypes['clickEvent'] = (res) => {
-            /*console.group('onClickEvent');
+
+            onClickItem(res.event);
+            console.group('onClickEvent');
             console.log('MouseEvent : ', res.nativeEvent);
             console.log('Event Info : ', res.event);
-            console.groupEnd();*/
-            onClickItem(res.event);
+            console.groupEnd();
+
+            if (pintarSeleccion == true){
+
+              if(idPintado!=-1){
+                getCalInstance().updateEvent(idPintado, 'cal4', {
+                  calendarId: 'cal2',
+                });
+              }
+              
+              getCalInstance().updateEvent(res.event.id, 'cal2', {
+                calendarId: 'cal4',
+              });
+              setIdPintado(res.event.id)
+            }
+                      
+              
+                       
           };
 
   //documentacion de parametros https://github.com/nhn/tui.calendar/blob/main/docs/en/apis/options.md#eventfilter 

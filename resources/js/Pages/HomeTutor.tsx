@@ -438,7 +438,7 @@ const procesarItem = (event: any) => {
               </div>
 
               <div className={`${switchVisibility=="calendario" ? 'visible' : 'collapse'}`}>
-              <MyCalendar  soloLectura={true} eventos={auxEventos} onClickItem={procesarItem}
+              <MyCalendar  soloLectura={true} eventos={auxEventos} onClickItem={procesarItem} pintarSeleccion={true}
               />
               </div>
         </AppLayout>
