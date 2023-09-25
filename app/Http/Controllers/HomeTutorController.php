@@ -144,15 +144,13 @@ class HomeTutorController extends Controller
     Log::info('request object');
     Log::info($request);
     $arrayAuxiliar = explode(',', $params);
-    Log::info('fecha hora inicio');
+    Log::info('id horario');
     Log::info($arrayAuxiliar[0]);
-    Log::info('fecha hora fin');
-    Log::info($arrayAuxiliar[1]);
     Log::info('id paciente de tutor');
-    Log::info($arrayAuxiliar[2]);
+    Log::info($arrayAuxiliar[1]);
 
     $psicologoDePaciente = DB::table('pacientes')
-      ->where('id', $arrayAuxiliar[2])
+      ->where('id', $arrayAuxiliar[1])
       ->get();
     Log::info('pacienteeeeeeeee');
     Log::info($psicologoDePaciente);
@@ -161,23 +159,21 @@ class HomeTutorController extends Controller
 
     //reservar horario y registrar sesion con estado solicitud
     $horarioAux = DB::table('horarios')
-      ->where('psicologo_id', $psicologoDePaciente->first()->psicologo_id)
-      ->where('fecha_hora_inicio', $arrayAuxiliar[0])
-      ->where('fecha_hora_fin', $arrayAuxiliar[1])
+      ->where('id', $arrayAuxiliar[0])
       ->get();
 
     Log::info('horarioAux antes');
     Log::info($horarioAux);
 
     $affected = DB::table('horarios')
-      ->where('id', $horarioAux->first()->id)
+      ->where('id', $arrayAuxiliar[0])
       ->update(['isDisponible' => false]);
 
     Log::info('horarioNuevo despues');
     Log::info($affected);
 
     $sesionesAux = DB::table('sesions')
-      ->where('sesions.paciente_id', $arrayAuxiliar[2])
+      ->where('sesions.paciente_id', $arrayAuxiliar[1])
       ->orderBy('sesions.updated_at', 'desc')
       ->get();
 
@@ -188,9 +184,9 @@ class HomeTutorController extends Controller
       $sesion = new Sesion();
       $sesion->estado = 'solicitada';
       $sesion->pago_confirmado = false;
-      $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
-      $sesion->fecha_hora_fin = $arrayAuxiliar[1];
-      $sesion->paciente_id = $arrayAuxiliar[2];
+      $sesion->fecha_hora_inicio = $horarioAux->first()->fecha_hora_inicio;
+      $sesion->fecha_hora_fin = $horarioAux->first()->fecha_hora_fin;
+      $sesion->paciente_id = $arrayAuxiliar[1];
       $sesion->psicologo_id = $psicologoDePaciente->first()->psicologo_id;
       $sesion->solicitante = 'paciente';
       $sesion->contador_cancelaciones = 0;
@@ -209,8 +205,8 @@ class HomeTutorController extends Controller
           ->where('id', $sesionesAux->first()->id)
           ->update([
             'estado' => 'solicitada',
-            'fecha_hora_inicio' => $arrayAuxiliar[0],
-            'fecha_hora_fin' => $arrayAuxiliar[1],
+            'fecha_hora_inicio' => $horarioAux->first()->fecha_hora_inicio,
+            'fecha_hora_fin' => $horarioAux->first()->fecha_hora_fin,
             'solicitante' => 'paciente',
           ]);
         Log::info('asignados exitosamente');
@@ -220,9 +216,9 @@ class HomeTutorController extends Controller
         $sesion = new Sesion();
         $sesion->estado = 'solicitada';
         $sesion->pago_confirmado = false;
-        $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
-        $sesion->fecha_hora_fin = $arrayAuxiliar[1];
-        $sesion->paciente_id = $arrayAuxiliar[2];
+        $sesion->fecha_hora_inicio = $horarioAux->first()->fecha_hora_inicio;
+        $sesion->fecha_hora_fin = $horarioAux->first()->fecha_hora_fin;
+        $sesion->paciente_id = $arrayAuxiliar[1];
         $sesion->psicologo_id = $psicologoDePaciente->first()->psicologo_id;
         $sesion->solicitante = 'paciente';
         if (

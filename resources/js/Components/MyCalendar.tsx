@@ -22,8 +22,8 @@ interface Props{
 
 
 export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
-    console.log("llegaron los siguientes eventos")
-    console.log(eventos)
+   /* console.log("llegaron los siguientes eventos")
+    console.log(eventos)*/
     const [startDate, setStartDate] = useState(new Date());
     const [year, setYear] = useState(2024)
     const [month, setMonth] = useState(0)
@@ -147,7 +147,7 @@ export function MyCalendar({soloLectura,eventos,onClickItem}:Props) {
         height="900px"
         view="week"
         week={ {
-            //startDayOfWeek: 1, //Monday
+            startDayOfWeek: 1, //Monday
             dayNames: [ 'Domingo','Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'], //este string debe cambiar dependiendo de region
             narrowWeekend: false,
             workweek: false,

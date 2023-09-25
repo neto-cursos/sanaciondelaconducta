@@ -10,7 +10,7 @@ import useRoute from '@/Hooks/useRoute';
 import CustomButton from '@/Components/CustomButton';
 import InputLabel from '@/Components/InputLabel';
 import { isNull } from 'lodash';
-import { MyCalendar } from "./MyCalendar";
+import { MyCalendar } from "../Components/MyCalendar";
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 
 interface Props{
@@ -34,7 +34,7 @@ interface Props{
 }*/
 
 export default function Pacientes({user,pacientes,sesiones,pagos_pendientes,bloqueos,horarios}:Props) {
-    console.log("user")
+   /* console.log("user")
     console.log(user)
     console.log("pacientes")
     console.log(pacientes)
@@ -45,7 +45,7 @@ export default function Pacientes({user,pacientes,sesiones,pagos_pendientes,bloq
     console.log("bloqueos")
     console.log(bloqueos)
     console.log("horarios")
-    console.log(horarios)
+    console.log(horarios)*/
 
     const route = useRoute();
     const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
@@ -57,14 +57,16 @@ export default function Pacientes({user,pacientes,sesiones,pagos_pendientes,bloq
     psicologo_id:0,
   })
 
-  console.log("data inicializada")
-  console.log(data)
+  const [idEvent,setIdEvent]=useState(-1);
+
+  //console.log("data inicializada")
+ // console.log(data)
   const calendario = (id:any) => {
 //set data
 setData({
   paciente_id:id
 });
-console.log("data actualizada"+data);
+//console.log("data actualizada"+data);
 if(sesiones.length == 0){
   console.log("agendar sesion")
   setSwitchVisibility("calendario");
@@ -137,20 +139,25 @@ if(sesiones.length == 0){
 
   const update = (/*e:any*/) => {
     //e.preventDefault();
-    setSwitchVisibility("tablaboton");
-    put(route('pacientes.update','2023-11-04 14:00:00,2023-11-04 15:00:00'),{
-      onSuccess:()=>{
-        alert("Exito")
-      },
-      onError:()=>{
-        /*if(errors.name){
-          reset('name')
-        }
-        if(errors.email){
-          reset('email')
-        }*/
-      },
-    });
+    if(idEvent ==-1){
+      alert("debe elegir un horario")
+    }else{
+      setSwitchVisibility("tablaboton");
+      put(route('pacientes.update',idEvent),{
+        onSuccess:()=>{
+          alert("Exito")
+        },
+        onError:()=>{
+          /*if(errors.name){
+            reset('name')
+          }
+          if(errors.email){
+            reset('email')
+          }*/
+        },
+      });
+    }
+
   };
 
   const isBloqueado = (idPaciente:any) => {
@@ -169,7 +176,7 @@ if(sesiones.length == 0){
 
 let auxEventos = []
 let auxFecha = new Date()
-console.log(auxFecha)
+//console.log(auxFecha)
 /*for(let i = 0; i < sesions.length; i++) {
   //color distinto para el dia actual
   let auxInicio = new Date(sesions[i].fecha_hora_inicio)
@@ -201,27 +208,27 @@ if(horarios.length>0){
 for(let i = 0; i < horarios.length; i++) {
 
   if(new Date(horarios[i].fecha_hora_inicio)>auxFecha){
-    console.log("mayor")
+   // console.log("mayor")
     auxEventos.push({
       title: "libre",
       start: new Date(horarios[i].fecha_hora_inicio),
       end: new Date(horarios[i].fecha_hora_fin),
       calendarId: 'cal2',
+      id: horarios[i].id,
     })
 
     
   }else{
-    console.log("menor")
+    //console.log("menor")
   }
 }
   }
 
   const procesarItem = (event: any) => {
-    //setSwitchVisibility(false);
-    console.log("evento start")
-    console.log(event.start)
-    console.log("evento end")
-    console.log(event.start)
+    //setDateInicio(new Date(event.start).toISOString());
+    setIdEvent(event.id)
+    console.log("evento id")
+    console.log(idEvent)
   };
 
     return (

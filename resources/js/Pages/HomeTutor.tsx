@@ -10,7 +10,7 @@ import useRoute from '@/Hooks/useRoute';
 import CustomButton from '@/Components/CustomButton';
 import InputLabel from '@/Components/InputLabel';
 import { isNull } from 'lodash';
-import { MyCalendar } from "./MyCalendar";
+import { MyCalendar } from "../Components/MyCalendar";
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 
 interface Props{
@@ -65,6 +65,7 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     convenio:'',
   })
 
+  const [idEvent,setIdEvent]=useState(-1);
   /*console.log("data inicializada")
   console.log(data)*/
 
@@ -117,12 +118,13 @@ if(horarios.length>0 && !isNull(psico)){
     for(let i = 0; i < horarios.length; i++) {
     
       if(new Date(horarios[i].fecha_hora_inicio)>auxFecha && horarios[i].psicologo_id==psico){
-        console.log("mayor")
+       // console.log("mayor")
         setAuxEventos(auxEventos => [...auxEventos,{
           title: "libre",
           start: new Date(horarios[i].fecha_hora_inicio),
           end: new Date(horarios[i].fecha_hora_fin),
           calendarId: 'cal2',
+          id: horarios[i].id,
         } ])
         /*auxEventos.push({
           title: "libre",
@@ -131,7 +133,7 @@ if(horarios.length>0 && !isNull(psico)){
           calendarId: 'cal2',
         })*/
       }else{
-        console.log("menor")
+        //console.log("menor")
       }
       }
 
@@ -219,20 +221,25 @@ if(horarios.length>0 && !isNull(psico)){
 
   const update = (/*e:any*/) => {
     //e.preventDefault();
-    setSwitchVisibility("tablaboton");
-    put(route('homeTutor.update','2023-11-04 14:00:00,2023-11-04 15:00:00,'+selected),{
-      onSuccess:()=>{
-        alert("Exito")
-      },
-      onError:()=>{
-        /*if(errors.name){
-          reset('name')
-        }
-        if(errors.email){
-          reset('email')
-        }*/
-      },
-    });
+    if(idEvent ==-1){
+      alert("debe elegir un horario")
+    }else{
+      setSwitchVisibility("tablaboton");
+      put(route('homeTutor.update',idEvent+','+selected),{
+        onSuccess:()=>{
+          alert("Exito")
+        },
+        onError:()=>{
+          /*if(errors.name){
+            reset('name')
+          }
+          if(errors.email){
+            reset('email')
+          }*/
+        },
+      });
+    }
+
   };
 
   const save = (e:any) => {
@@ -284,11 +291,10 @@ if(horarios.length>0 && !isNull(psico)){
 }*/
 
 const procesarItem = (event: any) => {
-  //setSwitchVisibility(false);
-  console.log("evento start")
-  console.log(event.start)
-  console.log("evento end")
-  console.log(event.end)
+    //setDateInicio(new Date(event.start).toISOString());
+    setIdEvent(event.id)
+    console.log("evento id")
+    console.log(idEvent)
 };
 
     return (

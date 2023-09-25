@@ -9,7 +9,7 @@ import InputError from '@/Components/InputError';
 import useRoute from '@/Hooks/useRoute';
 import CustomButton from '@/Components/CustomButton';
 import InputLabel from '@/Components/InputLabel';
-import { MyCalendar } from "./MyCalendar";
+import { MyCalendar } from "../Components/MyCalendar";
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 
 interface Props{
@@ -35,7 +35,7 @@ interface Props{
 
 export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psicologos,pagos_pendientes,horarios}:Props) {
     
-  console.log("user")
+ /* console.log("user")
     console.log(user)
     console.log("psicologo_id")
     console.log(psicologo_id)
@@ -48,7 +48,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     console.log("pagos pendientes")
     console.log(pagos_pendientes)
     console.log("horarios")
-    console.log(horarios)
+    console.log(horarios)*/
 
     const route = useRoute();
     const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
@@ -68,6 +68,8 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
     convenio:'',
     sesion_id:''
   })
+
+  const [idEvent,setIdEvent]=useState(-1);
 
   const asignarPsicologo = (psicologo_id: any) => {
     setSwitchVisibility("tablaboton")
@@ -135,20 +137,26 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
 
   const update = (/*e:any*/) => {
     //e.preventDefault();
-    setSwitchVisibility("tablaboton");
-    put(route('homePaciente.update','2023-11-04 14:00:00,2023-11-04 15:00:00'),{
-      onSuccess:()=>{
-        alert("Exito")
-      },
-      onError:()=>{
-        /*if(errors.name){
-          reset('name')
-        }
-        if(errors.email){
-          reset('email')
-        }*/
-      },
-    });
+
+    if(idEvent ==-1){
+      alert("debe elegir un horario")
+    }else{
+      setSwitchVisibility("tablaboton");
+      put(route('homePaciente.update',idEvent),{
+        onSuccess:()=>{
+          alert("Exito")
+        },
+        onError:()=>{
+          /*if(errors.name){
+            reset('name')
+          }
+          if(errors.email){
+            reset('email')
+          }*/
+        },
+      });
+    }
+
   };
 
   const save = (e:any) => {
@@ -206,17 +214,18 @@ if(horarios.length>0){
 for(let i = 0; i < horarios.length; i++) {
 
   if(new Date(horarios[i].fecha_hora_inicio)>auxFecha){
-    console.log("mayor")
+   // console.log("mayor")
     
     auxEventos.push({
       title: "libre",
       start: new Date(horarios[i].fecha_hora_inicio),
       end: new Date(horarios[i].fecha_hora_fin),
       calendarId: 'cal2',
+      id: horarios[i].id,
     })
 
   }else{
-    console.log("menor")
+   // console.log("menor")
   }
 
   }
@@ -224,11 +233,10 @@ for(let i = 0; i < horarios.length; i++) {
 
 
 const procesarItem = (event: any) => {
-  //setSwitchVisibility(false);
-  console.log("evento start")
-  console.log(event.start)
-  console.log("evento end")
-  console.log(event.start)
+    //setDateInicio(new Date(event.start).toISOString());
+    setIdEvent(event.id)
+    console.log("evento id")
+    console.log(idEvent)
 };
 
     return (

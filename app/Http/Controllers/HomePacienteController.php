@@ -105,29 +105,22 @@ class HomePacienteController extends Controller
   }
 
   //solicitar sesion
-  public function update(Request $request, $params)
+  public function update(Request $request, $param)
   {
     Log::info('update');
     Log::info('request object');
     Log::info($request);
-    $arrayAuxiliar = explode(',', $params);
-    Log::info('fecha hora inicio');
-    Log::info($arrayAuxiliar[0]);
-    Log::info('fecha hora fin');
-    Log::info($arrayAuxiliar[1]);
 
     //reservar horario y registrar sesion con estado solicitud
     $horarioAux = DB::table('horarios')
-      ->where('psicologo_id', $request->psicologo_id)
-      ->where('fecha_hora_inicio', $arrayAuxiliar[0])
-      ->where('fecha_hora_fin', $arrayAuxiliar[1])
+      ->where('id', $param)
       ->get();
 
     //Log::info('horarioAux antes');
     //Log::info($horarioAux);
 
     $affected = DB::table('horarios')
-      ->where('id', $horarioAux->first()->id)
+      ->where('id', $param)
       ->update(['isDisponible' => false]);
 
     //Log::info('horarioNuevo despues');
@@ -143,8 +136,8 @@ class HomePacienteController extends Controller
       $sesion = new Sesion();
       $sesion->estado = 'solicitada';
       $sesion->pago_confirmado = false;
-      $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
-      $sesion->fecha_hora_fin = $arrayAuxiliar[1];
+      $sesion->fecha_hora_inicio = $horarioAux->first()->fecha_hora_inicio;
+      $sesion->fecha_hora_fin = $horarioAux->first()->fecha_hora_fin;
       $sesion->paciente_id = $request->paciente_id;
       $sesion->psicologo_id = $request->psicologo_id;
       $sesion->solicitante = 'paciente';
@@ -164,8 +157,8 @@ class HomePacienteController extends Controller
           ->where('id', $sesionesAux->first()->id)
           ->update([
             'estado' => 'solicitada',
-            'fecha_hora_inicio' => $arrayAuxiliar[0],
-            'fecha_hora_fin' => $arrayAuxiliar[1],
+            'fecha_hora_inicio' => $horarioAux->first()->fecha_hora_inicio,
+            'fecha_hora_fin' => $horarioAux->first()->fecha_hora_fin,
             'solicitante' => 'paciente',
           ]);
         Log::info('asignados exitosamente');
@@ -175,8 +168,8 @@ class HomePacienteController extends Controller
         $sesion = new Sesion();
         $sesion->estado = 'solicitada';
         $sesion->pago_confirmado = false;
-        $sesion->fecha_hora_inicio = $arrayAuxiliar[0];
-        $sesion->fecha_hora_fin = $arrayAuxiliar[1];
+        $sesion->fecha_hora_inicio = $horarioAux->first()->fecha_hora_inicio;
+        $sesion->fecha_hora_fin = $horarioAux->first()->fecha_hora_fin;
         $sesion->paciente_id = $request->paciente_id;
         $sesion->psicologo_id = $request->psicologo_id;
         $sesion->solicitante = 'paciente';

@@ -4,7 +4,7 @@ import LogoLayout from '@/Layouts/LogoLayout';
 import Titulo from '@/Components/Titulo';
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { MyCalendar } from "./MyCalendar";
+import { MyCalendar } from "../Components/MyCalendar";
 //import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
