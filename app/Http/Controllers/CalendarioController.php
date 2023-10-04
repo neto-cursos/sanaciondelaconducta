@@ -20,12 +20,38 @@ class CalendarioController extends Controller
       ->where('sesions.estado', 'programada')
       ->get();
 
-    //recuperar disponibilidad de horarios del psicologo
-      if($sesions->first()){
-    $horarios = DB::table('horarios')
+         Log::info('sesions');
+    Log::info($sesions);
+
+    if($sesions->first()){
+      $horarios = DB::table('horarios')
       ->where('psicologo_id', $sesions->first()->psicologo_id)
       ->where('isDisponible', 1)
       ->get();
+    }else{
+      $auxiliar100= DB::table('psicologos')
+      ->selectRaw('psicologos.id')
+      ->join('users', 'psicologos.user_id', '=', 'users.id')
+      ->where('users.id', Auth::id())
+      ->get();
+      $horarios = DB::table('horarios')
+      ->where('psicologo_id', $auxiliar100->first()->id)
+      ->where('isDisponible', 1)
+      ->get();
+    }
+    //recuperar disponibilidad de horarios del psicologo
+    
+
+    Log::info('horariossssss');
+    Log::info($horarios);
+
+    return Inertia::render('Calendario', [
+      'sesions' => $sesions,
+      'horarios' => $horarios,
+    ]);
+  }
+}
+
 }else{
       
       $horarios = [];
