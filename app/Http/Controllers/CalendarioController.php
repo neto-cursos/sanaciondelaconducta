@@ -21,11 +21,15 @@ class CalendarioController extends Controller
       ->get();
 
     //recuperar disponibilidad de horarios del psicologo
+      if($sesions->first()){
     $horarios = DB::table('horarios')
       ->where('psicologo_id', $sesions->first()->psicologo_id)
       ->where('isDisponible', 1)
       ->get();
-
+}else{
+      
+      $horarios = [];
+    }
     //Log::info('aaaaaaaaaaaaaaaaaaaa');
     //Log::info($sesions->first()->psicologo_id);
 
