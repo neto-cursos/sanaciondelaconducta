@@ -22,7 +22,11 @@ export default function AsignarPaciente(/*{users}:Props*/){
   const{data,setData,put,processing,reset,errors} = useForm({
     ci:''
   })
+/*  if(session('id')('alerta')){
+    alert(e)
 
+  }*/
+    
   const update = (e:any) => {
     e.preventDefault();
     put(route('asignarPaciente.update',data.ci),{
