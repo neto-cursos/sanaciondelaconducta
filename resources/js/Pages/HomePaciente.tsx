@@ -89,8 +89,12 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
   };
 
   const programarSesion = () => {
+    if(psicologo_id==null){
+      console.log("asignar psicologo")
+      setSwitchVisibility("tablapsicologos");
+    }else{
     if(sesiones.length == 0){
-      console.log("agendar sesion")
+      console.log("agendar sesion no debeeee")
       setSwitchVisibility("calendario");
     }else{
     //check si hay una sesion programada
@@ -133,6 +137,7 @@ export default function HomePaciente({user,psicologo_id,paciente_id,sesiones,psi
       }
     }
   }
+}
   };  
 
   const update = (/*e:any*/) => {
