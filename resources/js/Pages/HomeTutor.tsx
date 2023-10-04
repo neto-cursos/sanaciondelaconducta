@@ -36,10 +36,10 @@ interface Props{
 export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pendientes,horarios}:Props) {
   const [auxEventos,setAuxEventos] = useState([]);
     /*console.log("user")
-    console.log(user)
-    console.log("paciente_id, psicologo_id, name, apellidos, ci")
-    console.log(pacientes)
-    console.log("sesiones")
+    console.log(user)*/
+   // console.log("paciente_id, psicologo_id, name, apellidos, ci")
+  //  console.log(pacientes)
+  /*  console.log("sesiones")
     console.log(sesiones)
     console.log("psicologos")
     console.log(psicologos)
@@ -49,7 +49,7 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     console.log(horarios)*/
 
     const route = useRoute();
-    const [switchVisibility, setSwitchVisibility] = useState("tablaboton");
+    const [switchVisibility, setSwitchVisibility] = useState("nada");
 
     const servicioInput= useRef(null)
     const institucionInput= useRef(null)
@@ -58,8 +58,8 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     const{data,setData,put,post,delete:destroy,processing,reset,errors} = useForm({
     estado:'pendiente',
     pago_confirmado:0,
-    paciente_id:pacientes[0].id,
-    psicologo_id:pacientes[0].psicologo_id,
+    paciente_id:'',
+    psicologo_id:'',
     servicio:'',
     institucion:'',
     convenio:'',
@@ -69,7 +69,17 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
   /*console.log("data inicializada")
   console.log(data)*/
 
-  const [selected, setSelected] = useState(pacientes[0].id);
+  const [selected, setSelected] = useState(-1);
+
+  if(pacientes.length>0){
+    setSelected(pacientes[0].id);
+setSwitchVisibility("tablaboton");
+    setData({
+      paciente_id:pacientes[0].id,
+      psicologo_id:pacientes[0].psicologo_id
+});
+
+  }
 
   const handleChange = (event:any) => {
     console.log("target id" + event.target.id);
