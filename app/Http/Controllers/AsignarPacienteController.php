@@ -60,32 +60,40 @@ class AsignarPacienteController extends Controller
     Log::info('id tutor solicitante, ci, name, apellidos');
     Log::info($tutorSolicitante);
 
-    $obj = new SolicitudTutor();
-    $obj->paciente_id = $results->first()->paciente_id;
-    $obj->tutor_actual = $results->first()->tutor_id;
-    $obj->tutor_solicitante = $tutorSolicitante->first()->id;
-    $obj->estado = 'pendiente';
-    $obj->ci = $results->first()->ci;
-    $obj->name = $tutorSolicitante->first()->name;
-    $obj->apellidos = $tutorSolicitante->first()->apellidos;
-    Log::info('obj');
-    Log::info($obj);
-    $obj->save();
+    if($results->first()){
+      $obj = new SolicitudTutor();
+      $obj->paciente_id = $results->first()->paciente_id;
+      $obj->tutor_actual = $results->first()->tutor_id;
+      $obj->tutor_solicitante = $tutorSolicitante->first()->id;
+      $obj->estado = 'pendiente';
+      $obj->ci = $results->first()->ci;
+      $obj->name = $tutorSolicitante->first()->name;
+      $obj->apellidos = $tutorSolicitante->first()->apellidos;
+      Log::info('obj');
+      Log::info($obj);
+      $obj->save();
+  
+      //la siguiente sentencia no sirve porque usa el ci del paciente y no su id. O MANEJAMOS EL CI? NO OLVIDAR QUE ES UNA TABLA INTERMEDIA CON EL ID DEL PACIENTE Y EL TUTOR
+      /* $user->fill($request->input())->saveOrFail();*/
+      //Log::info('solicitando asignacion de  paciente');
+      // Log::info($id);
+  
+      /*$pacientetutor = new PacienteTutor();
+      $pacientetutor->paciente_id = $request->get('ci');
+      $pacientetutor->tutor_id = 130;
+      $pacientetutor->save();*/
+  
+      //Notification::send('carlosmendizabal299@gmail.com', new Prueba());
+     // \Notification::route('mail', 'carlosmendizabal299@gmail.com')->notify(
+      //  new NotificacionSolicitudTutor(/*$invoice*/)
+     // );
+   return redirect('asignarPaciente');
+    }else{
 
-    //la siguiente sentencia no sirve porque usa el ci del paciente y no su id. O MANEJAMOS EL CI? NO OLVIDAR QUE ES UNA TABLA INTERMEDIA CON EL ID DEL PACIENTE Y EL TUTOR
-    /* $user->fill($request->input())->saveOrFail();*/
-    //Log::info('solicitando asignacion de  paciente');
-    // Log::info($id);
+     return redirect('asignarPaciente');
 
-    /*$pacientetutor = new PacienteTutor();
-    $pacientetutor->paciente_id = $request->get('ci');
-    $pacientetutor->tutor_id = 130;
-    $pacientetutor->save();*/
-
-    //Notification::send('carlosmendizabal299@gmail.com', new Prueba());
-    \Notification::route('mail', 'carlosmendizabal299@gmail.com')->notify(
-      new NotificacionSolicitudTutor(/*$invoice*/)
-    );
+  }
+   
     //return redirect('asignarPaciente');
   }
 }
