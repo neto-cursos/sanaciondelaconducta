@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState ,useEffect} from 'react'
 import AppLayout from '@/Layouts/AppLayout';
 import LogoLayout from '@/Layouts/LogoLayout';
 import Titulo from '@/Components/Titulo';
@@ -39,9 +39,9 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
     console.log(user)*/
    // console.log("paciente_id, psicologo_id, name, apellidos, ci")
   //  console.log(pacientes)
-  /*  console.log("sesiones")
+    console.log("sesiones")
     console.log(sesiones)
-    console.log("psicologos")
+   /* console.log("psicologos")
     console.log(psicologos)
     console.log("pagos pendientes")
     console.log(pagos_pendientes)
@@ -71,15 +71,19 @@ export default function HomeTutor({user,pacientes,sesiones,psicologos,pagos_pend
 
   const [selected, setSelected] = useState(-1);
 
-  if(pacientes.length>0){
-    setSelected(pacientes[0].id);
-setSwitchVisibility("tablaboton");
-    setData({
-      paciente_id:pacientes[0].id,
-      psicologo_id:pacientes[0].psicologo_id
-});
+  useEffect(() => {
+    if(pacientes.length>0){
+      setSelected(pacientes[0].id);
+  setSwitchVisibility("tablaboton");
+      setData({
+        paciente_id:pacientes[0].id,
+        psicologo_id:pacientes[0].psicologo_id
+  });
+  
+    }
+  },[]);
 
-  }
+
 
   const handleChange = (event:any) => {
     console.log("target id" + event.target.id);
@@ -119,6 +123,10 @@ let m = -1
 console.log("psicologo del pacienteeeeeeeeeeeeeee!!!!!!!!!!!!!")
 console.log(psico +" del paciente "+ data.paciente_id)
 
+if(isNull(psico)){
+  console.log("asignar psicologo")
+  setSwitchVisibility("tablapsicologos");
+}else{
 if(horarios.length>0 && !isNull(psico)){
   console.log("hay horarios y el psicolgo existe")
     //el mes en los objetos del json de eventos va de 1 (enero) a 12 (diciembre)
@@ -227,6 +235,7 @@ if(horarios.length>0 && !isNull(psico)){
   }
   }
 }
+  }
   };  
 
   const update = (/*e:any*/) => {
