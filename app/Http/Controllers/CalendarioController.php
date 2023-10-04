@@ -51,17 +51,3 @@ class CalendarioController extends Controller
     ]);
   }
 }
-
-}else{
-      
-      $horarios = [];
-    }
-    //Log::info('aaaaaaaaaaaaaaaaaaaa');
-    //Log::info($sesions->first()->psicologo_id);
-
-    return Inertia::render('Calendario', [
-      'sesions' => $sesions,
-      'horarios' => $horarios,
-    ]);
-  }
-}
