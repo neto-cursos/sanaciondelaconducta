@@ -48,13 +48,28 @@ class SolicitudTutorController extends Controller
     Log::info($solicitudTutor);
     $solicitudTutor->estado = 'terminada';
 
+    Log::info('paacientee iddddd');
+    Log::info($solicitudTutor->first()->paciente_id);
+    Log::info('tutor solicitanteeeeeeeee');
+    Log::info($solicitudTutor->first()->tutor_solicitante);
+
+    
+
+    $solicitudTutor->save();
+
+    $auxbug = DB::table('solicitud_tutor')
+          ->selectRaw('solicitud_tutor.paciente_id')
+    ->where('solicitud_tutor.id', $id)
+    ->get();
+
+    Log::info('auxbug');
+    Log::info($auxbug->first()->paciente_id);
+
     $obj = new PacienteTutor();
-    $obj->paciente_id = $solicitudTutor->first()->paciente_id;
+    $obj->paciente_id = $auxbug->first()->paciente_id;
     $obj->tutor_id = $solicitudTutor->first()->tutor_solicitante;
     Log::info('obj');
     Log::info($obj);
-
-    $solicitudTutor->saveOrFail();
 
     $obj->save();
 
