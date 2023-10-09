@@ -15,18 +15,18 @@ return new class extends Migration {
         sepa cómo debe notificar a un usuario (puede tener 4 valores que son 
         sms, whatsapp, telegram, correo)*/
       $table->string('apellidos')->after('name');
-      $table->string('canal_comunicacion');
+      $table->string('canal_comunicacion')->nullable();
       $table->smallInteger('contador_bloqueos')->nullable();
       $table->boolean('bloqueo_permanente')->nullable();
-      $table->date('fecha_nacimiento');
+      $table->date('fecha_nacimiento')->nullable();
       $table->string('ocupacion')->nullable();
-      $table->string('ci');
-      $table->string('codigo_pais_telefono');
-      $table->string('telefono');
-      $table->string('pregunta_seguridad_a');
-      $table->string('pregunta_seguridad_b');
-      $table->string('respuesta_seguridad_a');
-      $table->string('respuesta_seguridad_b');
+      $table->string('ci')->nullable();
+      $table->string('codigo_pais_telefono')->nullable();
+      $table->string('telefono')->nullable();
+      $table->string('pregunta_seguridad_a')->nullable();
+      $table->string('pregunta_seguridad_b')->nullable();
+      $table->string('respuesta_seguridad_a')->nullable();
+      $table->string('respuesta_seguridad_b')->nullable();
     });
 
     //Un psicólogo pueden tener 3 estados (activo, inactivo, ausente temporalmente)
@@ -36,14 +36,14 @@ return new class extends Migration {
       //Un psicólogo pueden tener 3 estados (activo, inactivo, ausente temporalmente)
       $table->string('estado');
       $table->timestamps();
-      $table->date('fecha_funcion_titulo');
-      $table->string('universidad');
-      $table->string('ciudad_residencia');
-      $table->string('departamento_residencia');
-      $table->string('pais_residencia');
+      $table->date('fecha_funcion_titulo')->nullable();
+      $table->string('universidad')->nullable();
+      $table->string('ciudad_residencia')->nullable();
+      $table->string('departamento_residencia')->nullable();
+      $table->string('pais_residencia')->nullable();
       //los archivos del cv se guardan en la tabla archivos
       $table->string('descripcion_cv')->nullable();
-      $table->binary('foto');
+      $table->binary('foto')->nullable();
     });
 
     Schema::create('pacientes', function (Blueprint $table) {

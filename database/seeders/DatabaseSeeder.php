@@ -3,10 +3,13 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
+use App\Models\Tutor;
+use App\Models\Paciente;
+use App\Models\Psicologo;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -68,6 +71,37 @@ class DatabaseSeeder extends Seeder
     $user->save();
     $user->assignRole($rolePsicologo);
 
+    $psicologo=new Psicologo();
+    $psicologo->user_id=$user->id;
+    $psicologo->estado='activo';
+    $psicologo->save();
+
+    $user = new User();
+    $user->name = 'psicologo2';
+    $user->apellidos = 'apellido2';
+    $user->email = 'psicologo2@gmail.com';
+    $user->password = bcrypt('psicologo2');
+    $user->email_verified_at = now();
+    $user->canal_comunicacion = 'correo';
+    $user->contador_bloqueos = 0;
+    $user->bloqueo_permanente = false;
+    $user->fecha_nacimiento = '2023-02-02';
+    $user->ocupacion = 'ingeniero';
+    $user->ci = '219301249asd';
+    $user->codigo_pais_telefono = '+591';
+    $user->telefono = '7347272';
+    $user->pregunta_seguridad_a = 'pregunta a';
+    $user->pregunta_seguridad_b = 'pregunta b';
+    $user->respuesta_seguridad_a = 'respuesta a';
+    $user->respuesta_seguridad_b = 'respuesta b';
+    $user->save();
+    $user->assignRole($rolePsicologo);
+
+    $psicologo=new Psicologo();
+    $psicologo->user_id=$user->id;
+    $psicologo->estado='activo';
+    $psicologo->save();
+
     $user = new User();
     $user->name = 'tutor';
     $user->apellidos = 'apellido';
@@ -88,6 +122,10 @@ class DatabaseSeeder extends Seeder
     $user->respuesta_seguridad_b = 'respuesta b';
     $user->save();
     $user->assignRole($roleTutor);
+
+    $tutor=new Tutor();
+    $tutor->user_id=$user->id;
+    $tutor->save();
 
     $user = new User();
     $user->name = 'tutor2';
@@ -110,6 +148,10 @@ class DatabaseSeeder extends Seeder
     $user->save();
     $user->assignRole($roleTutor);
 
+    $tutor=new Tutor();
+    $tutor->user_id=$user->id;
+    $tutor->save();
+
     $user = new User();
     $user->name = 'paciente';
     $user->apellidos = 'apellido';
@@ -130,6 +172,37 @@ class DatabaseSeeder extends Seeder
     $user->respuesta_seguridad_b = 'respuesta b';
     $user->save();
     $user->assignRole($rolePaciente);
+
+    $paciente=new Paciente();
+    $paciente->user_id=$user->id;
+    $paciente->isAlta=0;
+    $paciente->save();
+
+    $user = new User();
+    $user->name = 'paciente2';
+    $user->apellidos = 'apellido_paciente2';
+    $user->email = 'paciente2@gmail.com';
+    $user->password = bcrypt('paciente2');
+    $user->email_verified_at = now();
+    $user->canal_comunicacion = 'correo';
+    $user->contador_bloqueos = 0;
+    $user->bloqueo_permanente = false;
+    $user->fecha_nacimiento = '2023-02-02';
+    $user->ocupacion = 'médico';
+    $user->ci = '219301249asd';
+    $user->codigo_pais_telefono = '+591';
+    $user->telefono = '7347373';
+    $user->pregunta_seguridad_a = 'pregunta a';
+    $user->pregunta_seguridad_b = 'pregunta b';
+    $user->respuesta_seguridad_a = 'respuesta a';
+    $user->respuesta_seguridad_b = 'respuesta b';
+    $user->save();
+    $user->assignRole($rolePaciente);
+
+    $paciente=new Paciente();
+    $paciente->user_id=$user->id;
+    $paciente->isAlta=0;
+    $paciente->save();
 
     $user = new User();
     $user->name = 'sinrol';
